@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+/* 添加主题配置 */
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+  --font-noto-serif-sc: var(--font-noto-serif-sc);
+  --font-noto-sans-sc: var(--font-noto-sans-sc);
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,6 +19,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-jetbrains: var(--font-jetbrains-mono);
+  --font-noto-serif: var(--font-noto-serif-sc);
+  --font-noto-sans: var(--font-noto-sans-sc);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,11 +39,35 @@ body {
 
 /* 点击计数器样式 */
 .counter-blinker {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 9999px; /* 使用 Tailwind 的 rounded-full 等效 */
   background: #ccc;
   transition: background 100ms;
+}
+
+/* 闪烁效果 */
+@keyframes blinkerPing {
+  0% {
+    background: #ccc;
+  }
+  10% {
+    background: #00FF66;
+  }
+  20% {
+    background: #ccc;
+  }
+  100% {
+    background: #ccc;
+  }
+}
+
+.counter-blinker--idle {
+  animation: blinkerPing 4s infinite;
+}
+
+.counter-blinker--typing {
+  background: #0000EE;
 }
 
 .counter-blinker--active.counter-blinker--local {

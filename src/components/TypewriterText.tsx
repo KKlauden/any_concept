@@ -137,7 +137,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     
     // 交互元素样式
     if (isInteractive) {
-      classes += 'word-clickable group font-semibold cursor-cell px-2 ';
+      classes += 'word-clickable group font-semibold font-noto-sans cursor-cell px-2 ';
     }
     
     // 已点击样式

@@ -1,56 +1,61 @@
 # 开发日志
 
-## 2025-07-01: 项目初始化
 
-- 使用 `create-next-app` 创建项目
-  ```bash
-  npx create-next-app@latest any_concept_web --typescript --eslint --app
-  ```
-- 安装依赖被中断，使用 `npm install` 完成安装
+## DEVLOG 编写规则
 
-## 2025-07-01: 交互式文字组件开发
+- 记录主要功能开发和重大改动，不记录琐碎的样式调整等小改动
+- 保持总结性和概述性，避免过于详细的实现细节
+- 按时间顺序组织，使用清晰的日期标题
+- 对重要组件和功能使用二级标题进行分类
+- 使用简洁的要点列表描述变更内容
 
-### 错误处理: 客户端组件错误
+---
 
-**错误信息:**
-```
-Ecmascript file had an error
-> 1 | import React, { useState, useEffect, useRef } from 'react';
-    |                           ^^^^^^^^^
-  2 | import { motion } from 'framer-motion';
-  3 |
-  4 | interface WordProps {
+## 2023-07-01: 项目初始化
 
-You're importing a component that needs `useEffect`. This React hook only works in a client component. To fix, mark the file (or its parent) with the `"use client"` directive.
+- 使用 `create-next-app` 创建 Next.js 项目
+- 配置 TypeScript、ESLint 和 App Router
 
- Learn more: https://nextjs.org/docs/app/api-reference/directives/use-client
-```
+## 2023-07-05: 核心组件开发
 
-**解决方案:**
+### InteractiveText 组件
+- 实现交互式文本组件，支持点击展开内容
+- 添加打字机效果和动画
+- 支持嵌套内容结构
+- 实现文本分词处理，解决中英文混排自然换行问题
 
-在组件文件顶部添加 `"use client"` 指令，将组件标记为客户端组件：
+### TypewriterText 组件
+- 实现打字机效果的文本显示
+- 添加背景色块和交互样式
+- 优化文本显示动画
 
-```tsx
-"use client";
+## 2023-07-10: 交互功能增强
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+### 点击计数器
+- 添加点击计数统计功能
+- 实现闪烁效果指示器（蓝色、灰色、绿色）
+- 添加初始加载动画效果
 
-// ... 组件代码
-```
+### 内容结构优化
+- 实现可交互项总数统计
+- 添加完成状态标识（🎉）
+- 优化展开内容的显示逻辑
 
-**原因说明:**
+## 2023-07-15: 字体与样式系统
 
-在Next.js 13+ 的App Router架构中，默认所有组件都是服务端组件（Server Components）。服务端组件无法使用浏览器API和React的一些钩子函数，比如`useEffect`、`useState`等。
+### 字体集成
+- 集成 JetBrains Mono 字体
+- 添加 Noto Serif SC 中文衬线字体
+- 添加 Noto Sans SC 中文无衬线字体
+- 配置多种字重支持
 
-当我们需要使用这些客户端功能时，必须通过`"use client"`指令将组件显式标记为客户端组件（Client Component）。这样Next.js就知道这个组件需要在浏览器中执行，而不是在服务器上渲染。
+### 样式系统优化
+- 使用 Tailwind CSS 控制字体和样式
+- 优化文本容器样式，支持自然换行
+- 调整背景色块样式和圆角
 
-**注意事项:**
+## 2023-07-20: 页面开发
 
-1. 客户端组件会增加客户端JavaScript包的大小
-2. 尽可能保持组件树的叶子节点为客户端组件，以优化性能
-3. 服务端组件可以导入并渲染客户端组件，但客户端组件不能导入服务端组件（可以作为子组件传递）
-
-**相关链接:**
-- [Next.js 文档: 客户端组件](https://nextjs.org/docs/app/building-your-application/rendering/client-components)
-- [Next.js 文档: use client 指令](https://nextjs.org/docs/app/api-reference/directives/use-client) 
+- 创建主页及内容结构
+- 添加 craft 和 projects 页面框架
+- 优化页面布局和响应式设计 

@@ -6,10 +6,9 @@ import { ParagraphItem, ContentItem } from '@/components/InteractiveText';
 export default function Home() {
   return (
     <main className="min-h-screen bg-white">
-      <div className="p-16 text-black/87 max-w-6xl">
+      <div className="p-16 text-black/87 max-w-6xl font-noto-sans">
         <InteractiveText data={introData as ContentItem} />
       </div>
-      <div className="p-16 text-base text-black/87"> "clicknum" CLICKES</div>
       {/* <div className="mt-8 flex text-sm text-center text-black/32">
       <Image
           src="/logo.png"
