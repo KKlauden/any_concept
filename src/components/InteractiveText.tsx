@@ -440,14 +440,14 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ data }) => {
         {showMainContent && (
           <>
           <motion.div 
-            className="text-container text-2xl flex flex-wrap leading-relaxed font-medium font-noto-serif tracking-wide"
+            className="text-container text-xl md:text-2xl flex flex-wrap leading-relaxed font-medium font-noto-serif tracking-wide"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
             {renderContent(data)}
           </motion.div>
-          <div className='w-full h-28'></div>
+          <div className='w-full h-12 md:h-28'></div>
           </>
         )}
       </AnimatePresence>

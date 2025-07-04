@@ -11,27 +11,31 @@ const geistSans = Geist({
 const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800'],
+  weight: [ '400', '500', '600', '700', '800'],
   display: 'swap',
 })
 
 const notoSerifSC = Noto_Serif_SC({
   subsets: ['latin'],
   variable: '--font-noto-serif-sc',
-  weight: ['200', '300', '400', '500', '600', '700', '900'],
+  weight: [ '400', '500', '600', '700', '900'],
   display: 'swap',
+  preload: true,
+  fallback: ['serif'],
 })
 
 const notoSansSC = Noto_Sans_SC({
   subsets: ['latin'],
   variable: '--font-noto-sans-sc',
-  weight: ['100', '300', '400', '500', '700', '900'],
+  weight: [ '400', '500', '700'],
   display: 'swap',
+  preload: true,
+  fallback: ['sans-serif'],
 })
 
 export const metadata: Metadata = {
-  title: 'Any Concept',
-  description: 'Explore and Create',
+  title: 'Klauden',
+  description: "Klauden's Website",
 }
 
 export default function RootLayout({
@@ -40,7 +44,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${jetBrainsMono.variable} ${notoSerifSC.variable} ${notoSansSC.variable}`}>
+    <html lang="zh-CN" className={`${geistSans.variable} ${jetBrainsMono.variable} ${notoSerifSC.variable} ${notoSansSC.variable}`}>
       <body>{children}</body>
     </html>
   )

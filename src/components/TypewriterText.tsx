@@ -137,20 +137,20 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     
     // 交互元素样式
     if (isInteractive) {
-      classes += 'word-clickable group font-semibold font-noto-sans cursor-cell px-2 ';
+      classes += 'word-clickable group font-medium font-noto-sans cursor-cell px-2 ';
     }
     
     // 已点击样式
     if (isDisabled) {
-      classes += 'clicked bg-[#FBFBFA] ';
+      classes += 'clicked bg-zinc-50 ';
     }
     
     // 背景颜色
     if (showBackground) {
       if (isInteractive) {
-        classes += isHovered ? 'bg-[#EDEBE7] ' : 'bg-[#F6F5F3] ';
+        classes += isHovered ? 'bg-zinc-200 ' : 'bg-zinc-100 ';
       } else {
-        classes += 'bg-[#F6F5F3] ';
+        classes += 'bg-zinc-100 ';
       }
     }
     
