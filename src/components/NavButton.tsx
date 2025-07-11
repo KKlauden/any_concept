@@ -19,10 +19,10 @@ const NavButton: React.FC = () => {
   return (
     <>
       <div 
-        className="fixed bottom-12 right-12 z-50 hover:cursor-pointer p-4"
+        className="fixed bottom-4 right-4 md:bottom-12 md:right-12 z-50 hover:cursor-pointer p-4"
         onClick={toggleNav}
       >
-        <div className="w-16 h-16 rounded-full bg-zinc-100 flex items-center justify-center shadow">
+        <div className="w-16 h-16 rounded-full bg-zinc-100 flex items-center justify-center shadow border border-black/10">
           <AnimatePresence mode="popLayout">
             {!isOpen ? (
               <motion.div
@@ -36,7 +36,7 @@ const NavButton: React.FC = () => {
                 }}
               >
                 <Image
-                  src="/logo-open.png"
+                  src="/images/logo-open.png"
                   alt="nav-logo"
                   width={28}
                   height={28}
@@ -55,7 +55,7 @@ const NavButton: React.FC = () => {
                 }}
               >
                 <Image
-                  src="/logo-close.png"
+                  src="/images/logo-close.png"
                   alt="nav-logo"
                   width={28}
                   height={28}

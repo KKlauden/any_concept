@@ -1,23 +1,38 @@
 import Image from "next/image";
 import Link from "next/link";
+import NavButton from '@/components/NavButton';
+import WorkItem from "@/components/WorkItem";
+import { getAllCrafts } from '../../data/crafts';
 
 export default function CraftPage() {
+  // 获取所有作品数据
+  const works = getAllCrafts();
+
   return (
-    <main className="min-h-screen bg-white">
-      <div className="p-16 text-black/87 max-w-6xl">
-        <div className="mb-8">
-          <Link href="/" className="text-blue-600 hover:underline flex items-center">
-            <span className="mr-2">←</span> 返回首页
-          </Link>
+    <main className="bg-white text-black/87 min-h-screen p-2 pb-36">  
+      
+      {/* 作品网格 */}
+      <section className="mx-auto">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-2">
+          {works.map((work) => (
+            <div key={work.id} className="mb-2 break-inside-avoid">
+              <WorkItem 
+                title={work.title}
+                year={work.year}
+                coverImage={work.coverImage}
+                height={work.height}
+                type={work.type}
+                textColor={work.textColor}
+                textPosition={work.textPosition}
+                link={work.externalLink}
+                slug={!work.externalLink ? work.slug : undefined}
+              />
+            </div>
+          ))}
         </div>
-        
-        <h1 className="text-4xl font-bold mb-8">创作空间</h1>
-        
-        {/* 页面内容留空 */}
-        <div className="h-96 flex items-center justify-center text-gray-400 border border-dashed border-gray-300 rounded-lg">
-          内容开发中...
-        </div>
-      </div>
+      </section>
+      <NavButton />
+      
     </main>
   );
 } 
