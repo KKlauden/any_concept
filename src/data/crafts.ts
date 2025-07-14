@@ -17,9 +17,12 @@ export interface CraftDetail {
   description: string;
   details?: string;
   conclusion?: string;
+  hasExternal?: boolean; // 是否为外部链接
+  externalText?: string; // 外部链接文本
   externalLink?: string; // 外部链接，如果提供则点击跳转到外部网站
   images?: CraftImage[]; // 详情页的图片列表
   height?: number;
+  aspectRatio?: string;
   textColor?: string;
   textPosition?: "top" | "bottom";
 }
@@ -37,6 +40,7 @@ const craftData: CraftDetail[] = [
         details: "这个项目需要处理大量实时数据，同时保持界面的美观和用户友好性。我们采用了模块化设计，让用户可以自定义自己关注的数据模块。",
         conclusion: "最终的设计既满足了数据展示的需求，又保持了B站特有的动画风格和用户体验。",
         height: 360,
+        aspectRatio: "1.35",
         textColor: "white",
         textPosition: "bottom",
         images: [
@@ -76,6 +80,7 @@ const craftData: CraftDetail[] = [
         details: "印象笔记xOpta 体育营销方案",
         conclusion: "印象笔记xOpta 体育营销方案",
         height: 184,
+        aspectRatio: "2.64",
         textColor: "black",
         textPosition: "bottom",
         images:[
@@ -99,11 +104,11 @@ const craftData: CraftDetail[] = [
             alt:"印象笔记xOpta 体育营销方案",
             height:"860px"
           },
-          {
-            src:"/images/crafts/opta-yinxiang/yinxiang_05.jpg",
-            alt:"印象笔记xOpta 体育营销方案",
-            height:"775px"
-          },
+          // {
+          //   src:"/images/crafts/opta-yinxiang/yinxiang_05.jpg",
+          //   alt:"印象笔记xOpta 体育营销方案",
+          //   height:"775px"
+          // },
          
         ]
       },
@@ -113,16 +118,17 @@ const craftData: CraftDetail[] = [
         title: "直播切换动画",
         year: 2021,
         type: "UI设计",
-        coverImage: "/images/crafts/live-switch.mp4",
+        coverImage: "/videos/live-switch.mp4",
         description: "直播切换动画",
         details: "直播切换动画",
         conclusion: "直播切换动画",
         height: 289,
-        textColor: "black",
+        aspectRatio: "1.5",
+        textColor: "white",
         textPosition: "bottom",
         images:[
           {
-            src:"/images/crafts/live-switch.mp4",
+            src:"/videos/live-switch.mp4",
             alt:"直播切换动画",
             height:"289px"
           },
@@ -134,14 +140,18 @@ const craftData: CraftDetail[] = [
         title: "BRAVO H5",
         year: 2021,
         type: "UI设计",
-        coverImage: "/images/crafts/cover/bravo-h5.jpg",
+        coverImage: "/videos/bravo_h5_02.mp4",
         description: "BRAVO H5",
         details: "BRAVO H5",
         conclusion: "BRAVO H5",
-        height: 280,
+        height: 240,
+        aspectRatio: "1.72",
         textColor: "black",
         textPosition: "bottom",
+        hasExternal: true,
+        externalText: "查看网站",
         externalLink: "https://bravo.klauden.xyz/",
+
       },
   {
     id: "bravo-vi",
@@ -154,6 +164,7 @@ const craftData: CraftDetail[] = [
     details: "为了让足球数据更加直观，我们设计了一套完整的可视化系统，包括数据图表、比赛分析界面和球员数据展示。",
     conclusion: "这个项目使用了现代化的UI设计，结合了体育元素和数据可视化，为用户提供了清晰的数据分析体验。",
     height: 256,
+    aspectRatio: "1.9",
     textColor: "white",
     textPosition: "bottom",
     images: [
@@ -260,11 +271,12 @@ const craftData: CraftDetail[] = [
     title:"足球直播动画 UI",
     year:2020,
     type:"UI设计",
-    coverImage:"/images/crafts/cover/football-live-animate.jpg",
+    coverImage:"/images/crafts/cover/football-live.jpg",
     description:"足球直播动画 UI",
     details:"足球直播动画 UI",
     conclusion:"足球直播动画 UI",
     height:368,
+    aspectRatio: "1.32",
     textColor:"black",
     textPosition:"bottom",
     images:[
@@ -304,8 +316,11 @@ const craftData: CraftDetail[] = [
     details:"DORGAR 后台管理系统",
     conclusion:"DORGAR 后台管理系统",
     height:168,
-    textColor:"black",
+    aspectRatio: "2.43",
+    textColor:"white",
     textPosition:"bottom",
+    hasExternal: true,
+    externalText: "查看原型",
     externalLink:"https://www.figma.com/proto/s6qTB7kTMlqTyzGCcevYGH/%E9%81%93%E6%A0%BC%E5%88%A9%E7%AE%A1%E7%90%86%E5%90%8E%E5%8F%B0?page-id=0%3A1&node-id=103-5254&p=f&viewport=354%2C118%2C0.04&t=O1Jq9pzfoLyGYPmo-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=103%3A5254/",
   },
   {
@@ -319,6 +334,7 @@ const craftData: CraftDetail[] = [
     details:"京东赛事 LIVE UI 设计",
     conclusion:"京东赛事 LIVE UI 设计",
     height:350,
+    aspectRatio: "1.39",
     textColor:"white",
     textPosition:"bottom",
     images:[
@@ -354,8 +370,6 @@ const craftData: CraftDetail[] = [
       },
     ],
   },
-  
-  
   {
     id:"tokyo-ui",
     slug:"tokyo-ui",
@@ -367,8 +381,11 @@ const craftData: CraftDetail[] = [
     details:"TOKYO UI",
     conclusion:"TOKYO UI",
     height:284,
+    aspectRatio: "1.72",
     textColor:"black",
     textPosition:"bottom",
+    hasExternal: true,
+    externalText: "查看原型",
     externalLink:"https://www.figma.com/proto/jyvvv6WbxXjhSKhlvyw7vw/TOKYO-OLYMPIC---DORGARI?page-id=0%3A1&node-id=3-4&p=f&viewport=1032%2C603%2C0.08&t=ARoFyVmxC1TetU5n-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=3%3A4/",
   }
   // 可以继续添加更多作品...

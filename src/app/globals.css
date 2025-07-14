@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+
 /* 添加主题配置 */
 @theme {
   --font-sans: var(--font-geist-sans);
@@ -9,11 +10,53 @@
   --font-noto-sans-sc: var(--font-noto-sans-sc);
 }
 
+/* 在Tailwind CSS v4中，直接在CSS中定义变量和主题 */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  /* 从tailwind.config.js移动的颜色 */
+  --primary: #FF4100;
+  --secondary: #ffed4a;
+  --danger: #e3342f;
+  --textbg: #F6F5F3;
+  --texthoverbg: #EDEBE7;
+  /* Zinc颜色 */
+  --zinc-50: rgb(251 251 250);
+  --zinc-100: rgb(246 245 243);
+  --zinc-200: rgb(237 235 231);
+  --zinc-300: rgb(212 212 212);
+  --zinc-400: rgb(161 161 161);
+  --zinc-500: rgb(113 113 113);
+  --zinc-600: rgb(82 82 82);
+  --zinc-700: rgb(52 52 52);
+  --zinc-800: rgb(29 29 29);
+  --zinc-900: rgb(20 20 20);
+  --zinc-950: rgb(17 17 17);
 }
 
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
+  --primary: #FF4100;
+  --primary-foreground: #ffffff;
+  --secondary: #262626;
+  --secondary-foreground: #ffffff;
+  --accent: #262626;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ffffff;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --card: #171717;
+  --card-foreground: #ffffff;
+  --popover: #171717;
+  --popover-foreground: #ffffff;
+  --border: #262626;
+  --input: #262626;
+  --ring: #FF4100;
+}
+
+/* 映射变量到Tailwind主题 */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -22,6 +65,24 @@
   --font-jetbrains: var(--font-jetbrains-mono);
   --font-noto-serif: var(--font-noto-serif-sc);
   --font-noto-sans: var(--font-noto-sans-sc);
+  /* 颜色映射 */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-danger: var(--danger);
+  --color-textbg: var(--textbg);
+  --color-texthoverbg: var(--texthoverbg);
+  /* Zinc颜色映射 */
+  --color-zinc-50: var(--zinc-50);
+  --color-zinc-100: var(--zinc-100);
+  --color-zinc-200: var(--zinc-200);
+  --color-zinc-300: var(--zinc-300);
+  --color-zinc-400: var(--zinc-400);
+  --color-zinc-500: var(--zinc-500);
+  --color-zinc-600: var(--zinc-600);
+  --color-zinc-700: var(--zinc-700);
+  --color-zinc-800: var(--zinc-800);
+  --color-zinc-900: var(--zinc-900);
+  --color-zinc-950: var(--zinc-950);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -35,6 +96,18 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 启用容器查询 */
+.container {
+  container-type: inline-size;
+}
+
+/* 网格布局样式 */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), var(--grid-column-width));
+  gap: var(--grid-gap);
 }
 
 /* 点击计数器样式 */

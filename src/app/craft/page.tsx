@@ -21,9 +21,12 @@ export default function CraftPage() {
                 year={work.year}
                 coverImage={work.coverImage}
                 height={work.height}
+                aspectRatio={work.aspectRatio}
                 type={work.type}
                 textColor={work.textColor}
                 textPosition={work.textPosition}
+                hasExternal={work.hasExternal}
+                externalText={work.externalText}
                 link={work.externalLink}
                 slug={!work.externalLink ? work.slug : undefined}
               />

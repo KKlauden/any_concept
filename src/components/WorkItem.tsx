@@ -10,11 +10,14 @@ export type WorkItemProps = {
   coverImage?: string;
   videoSrc?: string;
   height?: number; // 自定义高度属性（像素值）
+  aspectRatio?: string; // 宽高比属性，例如 "1.35"
   textColor?: string;
   textPosition?: "top" | "bottom";
+  hasExternal?: boolean;
   link?: string; // 外部链接
   slug?: string; // 内部详情页链接
   type?: string;
+  externalText?: string;
 };
 
 const WorkItem = ({ 
@@ -23,11 +26,14 @@ const WorkItem = ({
   coverImage, 
   videoSrc, 
   height = 300,
+  aspectRatio = "1.5", // 默认宽高比为1.5
   link,
   slug,
   type,
   textColor = "white",
-  textPosition = "bottom"
+  textPosition = "bottom",
+  hasExternal = false,
+  externalText = "查看网站"
 }: WorkItemProps) => {
   
   // 检测coverImage是否为视频文件
@@ -36,17 +42,21 @@ const WorkItem = ({
     return coverImage.endsWith('.mp4') || coverImage.endsWith('.webm') || coverImage.endsWith('.mov');
   }, [coverImage]);
   
-  // 设置自定义高度
-  const heightStyle = { height: `${height}px` };
+  // 设置容器样式，使用aspect-ratio确保一致的宽高比
+  const containerStyle = useMemo(() => {
+    return { aspectRatio };
+  }, [aspectRatio]);
+  
   let textColorStyle = textColor === "white" ? "text-white" : "text-black/87";
+  let bgColorStyle = textColor === "white" ? "bg-black" : "bg-white";
   
   const content = (
     <div 
       className="relative group w-full hover:cursor-pointer"
-      style={heightStyle}
+      style={containerStyle}
     >
       {/* 媒体容器 */}
-      <div className="absolute inset-0 bg-white overflow-hidden rounded-xl border border-black/10">
+      <div className="absolute inset-0 bg-white overflow-hidden rounded-lg">
         {coverImage && !isVideoFile ? (
           <Image 
             src={coverImage} 
@@ -92,8 +102,14 @@ const WorkItem = ({
   
   // 添加整体悬停效果
   const wrapper = (
-    <div className="w-full h-full transition-all duration-300 hover:translate-y-[-1px]">
+    <div className={`group w-full h-full transition-all duration-300 hover:translate-y-[-1px] flex flex-col ${hasExternal ? "p-1" : ""} overflow-hidden gap-1 border border-black/8 rounded-xl bg-white`}>
       {content}
+      {hasExternal && (
+          <div className="bg-zinc-100 rounded-lg flex items-center justify-center h-[40px] hover:bg-zinc-200 group-hover:bg-zinc-200 transition-colors duration-200">
+            <p className="text-sm font-jetbrains-mono text-black mr-2">{externalText}</p>
+            <svg height="14" strokeLinejoin="round" viewBox="0 0 16 16" width="14"><path fillRule="evenodd" clipRule="evenodd" d="M9.53033 2.21968L9 1.68935L7.93934 2.75001L8.46967 3.28034L12.4393 7.25001H1.75H1V8.75001H1.75H12.4393L8.46967 12.7197L7.93934 13.25L9 14.3107L9.53033 13.7803L14.6036 8.70711C14.9941 8.31659 14.9941 7.68342 14.6036 7.2929L9.53033 2.21968Z" fill="currentColor"></path></svg>
+        </div>
+      )}
     </div>
   );
   

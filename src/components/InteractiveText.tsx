@@ -393,13 +393,10 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ data }) => {
               icon={item.icon}
               iconSize={iconSize}
             />
-            <Image
-              src="/link-arrow.png"
-              alt="external link"
-              width={12}
-              height={12}
-              className="absolute -top-2 -right-[2px]"
-            />
+            <svg className="absolute -top-2 -right-[2px]" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="6" cy="6" r="6" fill="black"/>
+<path d="M8.875 3.5C8.875 3.29289 8.70711 3.125 8.5 3.125L5.125 3.125C4.91789 3.125 4.75 3.29289 4.75 3.5C4.75 3.70711 4.91789 3.875 5.125 3.875H8.125V6.875C8.125 7.08211 8.29289 7.25 8.5 7.25C8.70711 7.25 8.875 7.08211 8.875 6.875L8.875 3.5ZM4 8L4.26517 8.26517L8.76517 3.76516L8.5 3.5L8.23484 3.23483L3.73483 7.73483L4 8Z" fill="white"/>
+</svg>
           </a>
         );
       
@@ -440,7 +437,7 @@ const InteractiveText: React.FC<InteractiveTextProps> = ({ data }) => {
         {showMainContent && (
           <>
           <motion.div 
-            className="text-container text-xl md:text-2xl flex flex-wrap leading-relaxed font-medium font-noto-serif tracking-wide"
+            className="text-container text-xl md:text-2xl flex flex-wrap leading-relaxed tracking-wide"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
