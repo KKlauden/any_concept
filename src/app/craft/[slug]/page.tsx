@@ -1,72 +1,95 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import NavButton from '@/components/NavButton';
-import { notFound } from 'next/navigation';
-import { getCraftDetail, getAllCraftSlugs, CraftImage } from '../../../data/crafts';
+import { notFound, useParams } from 'next/navigation';
 import MediaRenderer from './MediaRenderer';
+import { useLanguage } from '@/hooks/useLanguage';
+import { getLocalizedData } from '@/data/localizedData';
 
-// 生成静态路由参数
-export async function generateStaticParams() {
-  const slugs = await getAllCraftSlugs();
-  return slugs.map((slug: string) => ({ slug }));
-}
+// 详情页面组件
+export default function CraftDetailPage() {
+  const params = useParams();
+  const { locale, isClient, t } = useLanguage();
+  const [craftData, setCraftData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const slug = params?.slug as string;
 
-// 详情页面组件 - 正确处理params
-export default async function CraftDetailPage({ params }: { params: { slug: string } }) {
-  // 正确的异步处理方式：await params 然后解构
-  const { slug } = await params;
-  const craftData = await getCraftDetail(slug);
-  
-  // 如果找不到数据或者作品配置为外部链接，则返回404
-  if (!craftData || craftData.externalLink) {
+  useEffect(() => {
+    if (isClient && slug) {
+      const fetchData = async () => {
+        setLoading(true);
+        const craftsModule = getLocalizedData(locale, 'crafts');
+        const data = await craftsModule.getCraftDetail(slug);
+        
+        if (!data || data.externalLink) {
+          notFound();
+        }
+        
+        setCraftData(data);
+        setLoading(false);
+      };
+      
+      fetchData();
+    }
+  }, [locale, isClient, slug]);
+
+  if (!craftData && !loading) {
     notFound();
   }
 
   return (
     <main className="bg-white text-black/87 min-h-screen pb-36">
       <div className="max-w-[1034px] mx-auto pt-16 md:pt-32 px-2 md:px-16 xl:px-0">
-        {/* 顶部导航 */}
-        <div className="font-jetbrains-mono">
-          <div className=" text-sm md:text-base leading-none">(01) CRAFT</div>
-          
-          {/* 标题 */}
-          <h1 className="text-4xl md:text-6xl font-bold my-1 md:my-3 leading-tight max-w-2xl">{craftData.title}</h1>
-          
-          {/* 面包屑导航 */}
-          <div className="flex items-center space-x-2 text-xs md:text-sm text-black/54 leading-none">
-            <Link href="/" className="hover:underline">HOME</Link>
-            <span>/</span>
-            <Link href="/craft" className="hover:underline">CRAFT</Link>
-            <span>/</span>
-            <span>{craftData.title}</span>
-          </div>
-        </div>
-
-        {/* 主要内容区域 */}
-        <div className="my-12 md:my-24">
-          
-          {/* 图片/视频组合 - 支持视频文件 */}
-          <div className="flex flex-col">
-            {craftData.images?.map((image: CraftImage, index: number) => (
-              <div key={index} className="w-full mb-0">
-                {/* 使用响应式容器 */}
-                <div className="w-full">
-                  <MediaRenderer 
-                    src={image.src}
-                    alt={image.alt || `${craftData.title} - 图片 ${index + 1}`}
-                    priority={index < 3}
-                  />
-                </div>
-                
-                {image.caption && (
-                  <p className="text-sm text-black/54 text-center font-jetbrains-mono">{image.caption}</p>
-                )}
+        {loading ? (
+          // 使用空白页面而非骨架屏
+          <div className="min-h-[80vh]"></div>
+        ) : (
+          <>
+            {/* 顶部导航 */}
+            <div className="font-jetbrains-mono">
+              <div className=" text-sm md:text-base leading-none">(01) {t('nav.craft')}</div>
+              
+              {/* 标题 */}
+              <h1 className="text-4xl md:text-6xl font-bold my-1 md:my-3 leading-tight max-w-2xl">{craftData.title}</h1>
+              
+              {/* 面包屑导航 */}
+              <div className="flex items-center space-x-2 text-xs md:text-sm text-black/54 leading-none">
+                <Link href="/" className="hover:underline">{t('nav.home')}</Link>
+                <span>/</span>
+                <Link href="/craft" className="hover:underline">{t('nav.craft')}</Link>
+                <span>/</span>
+                <span>{craftData.title}</span>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-         
+            {/* 主要内容区域 */}
+            <div className="my-12 md:my-24">
+              
+              {/* 图片/视频组合 - 支持视频文件 */}
+              <div className="flex flex-col">
+                {craftData.images?.map((image: any, index: number) => (
+                  <div key={index} className="w-full mb-0">
+                    {/* 使用响应式容器 */}
+                    <div className="w-full">
+                      <MediaRenderer 
+                        src={image.src}
+                        alt={image.alt || `${craftData.title} - ${t('craft.image')} ${index + 1}`}
+                        priority={index < 3}
+                      />
+                    </div>
+                    
+                    {image.caption && (
+                      <p className="text-sm text-black/54 text-center font-jetbrains-mono">{image.caption}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
       <NavButton />
     </main>

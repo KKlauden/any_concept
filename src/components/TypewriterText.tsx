@@ -179,7 +179,8 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       onMouseEnter={isInteractive ? () => setIsHovered(true) : undefined}
       onMouseLeave={isInteractive ? () => setIsHovered(false) : undefined}
     >
-      <span className="whitespace-normal break-words">{displayText}</span>
+
+      <span className="whitespace-pre-wrap break-words">{displayText}</span>
       {icon && isVisible && (
         <Image
           src={icon}

@@ -71,20 +71,34 @@ const tokenizeText = (text: string): string[] => {
   // 对于西文按空格分词，对于中文按字符分词，但保留标点符号与相邻字符的连接
   const tokens: string[] = [];
   
-  // 匹配中文字符、西文单词、标点符号等
-  const regex = /([^\s\p{P}]+)|(\p{P}+)|\s+/gu;
-  let match;
+  // 检测语言类型（是否包含非ASCII字符，简单判断是否为中文）
+  const containsNonASCII = /[^\u0000-\u00ff]/.test(text);
   
-  while ((match = regex.exec(text)) !== null) {
-    if (match[0].trim() !== '') {
-      tokens.push(match[0]);
-    } else if (match[0].includes('\n')) {
-      // 处理换行符
-      tokens.push('\n');
-    } else if (match[0].includes(' ')) {
-      // 处理空格
-      tokens.push(' ');
+  if (containsNonASCII) {
+    // 中文处理：匹配中文字符、西文单词、标点符号等
+    const regex = /([^\s\p{P}]+)|(\p{P}+)|\s+/gu;
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+      if (match[0].trim() !== '') {
+        tokens.push(match[0]);
+      } else if (match[0].includes('\n')) {
+        // 处理换行符
+        tokens.push('\n');
+      } else if (match[0].includes(' ')) {
+        // 处理空格
+        tokens.push(' ');
+      }
     }
+  } else {
+    // 英文处理：保留单词间的空格
+    // 将文本按照单词和空格分割，同时保留标点符号
+    const words = text.split(/(\s+)/);
+    words.forEach(word => {
+      if (word) {
+        tokens.push(word);
+      }
+    });
   }
   
   return tokens;

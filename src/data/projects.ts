@@ -39,7 +39,7 @@ const projectData: Project[] = [
     title: "AbsoluteBook",
     description: "开源智能读书软件",
     year: 2025,
-    repo: "https://github.com/username/absolute_book",
+    // repo: "https://github.com/username/absolute_book",
     techStack: [
       "Python",
       "FastAPI",
@@ -86,7 +86,7 @@ const projectData: Project[] = [
     title: "AnyConecpt",
     description: "个人作品及创意展示平台",
     year: 2025,
-    repo: "https://github.com/username/any-concept",
+    repo: "https://github.com/KKlauden/any_concept",
     techStack: ["Next.js", "React", "TypeScript", "Tailwind CSS"],
     detailDescription:
       "AnyConecpt是一个用于展示个人作品和创意的平台，完全基于Next.js和React技术栈构建。这个项目旨在创建一个极简而优雅的作品集网站，同时实践最新的Web开发技术和理念。",
@@ -487,7 +487,7 @@ const projectData: Project[] = [
     title: "DorgariVideos",
     description: "自动化视频生成工具",
     year: 2021,
-    repo: "https://github.com/username/Dorgari_Videos",
+    repo: "https://github.com/KKlauden/dorgari-video-maker",
     techStack: [
       "Python",
       "MoviePy",

@@ -5,9 +5,12 @@ import Image from 'next/image';
 import { motion, AnimatePresence, cubicBezier } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLanguage } from '@/hooks/useLanguage';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const NavButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
   
   // 定义贝塞尔曲线过渡效果
   const customEasing = cubicBezier(0.25, 0.1, 0.25, 1);
@@ -22,7 +25,7 @@ const NavButton: React.FC = () => {
         className="fixed bottom-4 right-4 md:bottom-12 md:right-12 z-50 hover:cursor-pointer p-4"
         onClick={toggleNav}
       >
-        <div className="w-16 h-16 rounded-full bg-zinc-100 flex items-center justify-center shadow border border-black/10">
+        <div className="w-16 h-16 rounded-full bg-zinc-100 flex items-center justify-center shadow-[0px_4px_8px_0px_rgba(0,0,0,0.04),0px_1px_1px_0px_rgba(0,0,0,0.02)] border border-black/8">
           <AnimatePresence mode="popLayout">
             {!isOpen ? (
               <motion.div
@@ -36,7 +39,7 @@ const NavButton: React.FC = () => {
                 }}
               >
                 <Image
-                  src="/images/logo-open.png"
+                  src="/images/logo-open.svg"
                   alt="nav-logo"
                   width={28}
                   height={28}
@@ -55,7 +58,7 @@ const NavButton: React.FC = () => {
                 }}
               >
                 <Image
-                  src="/images/logo-close.png"
+                  src="/images/logo-close.svg"
                   alt="nav-logo"
                   width={28}
                   height={28}
@@ -81,16 +84,17 @@ const NavButton: React.FC = () => {
           >
             
               <nav className="space-y-8 flex flex-col items-start justify-center font-jetbrains-mono w-[272px] absolute top-28 right-9 lg:top-52 lg:right-60">
-                <NavItem idx="00" title="HOME" href="/" />
-                <NavItem idx="01" title="CRAFT" href="/craft" />
-                <NavItem idx="02" title="PROJECTS" href="/projects" />
-                <NavItem idx="03" title="PHOTOS" href="/photos" isInDevelopment={true} />
-                <NavItem idx="04" title="BOOKS" href="/books" isInDevelopment={true} />
+                <NavItem idx="00" title={t('nav.home')} href="/" />
+                <NavItem idx="01" title={t('nav.craft')} href="/craft" />
+                <NavItem idx="02" title={t('nav.projects')} href="/projects" />
+                <NavItem idx="03" title={t('nav.photos')} href="/photos" isInDevelopment={true} />
+                <NavItem idx="04" title={t('nav.books')} href="/books" isInDevelopment={true} />
 
+                <LanguageSwitcher />
               </nav>
               <div className='flex flex-col items-start justify-center gap-2 text-xs text-black/54 absolute bottom-19 left-8 lg:bottom-auto lg:top-[354px] lg:left-[68px]'>
-                <div>© 2025 Klauden </div>
-                <div>基于 Next.js & TailwindCSS 构建</div>
+                <div>{t('common.copyright')}</div>
+                <div>{t('common.builtWith')}</div>
               </div>
           </motion.div>
         )}

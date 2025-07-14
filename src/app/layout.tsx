@@ -1,6 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
+import { Providers } from './providers'
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ['latin'],
@@ -21,7 +22,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN" className={`${jetBrainsMono.variable}`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   )
 }

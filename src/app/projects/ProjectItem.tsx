@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface ProjectItemProps {
   title: string;
@@ -38,6 +39,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   index,
   id,
 }) => {
+  const { locale, t } = useLanguage();
   const [opacity, setOpacity] = useState(0);
   
   // 文字动画相关状态
@@ -59,6 +61,22 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
     
     return () => clearTimeout(timer);
   }, [loadingDelay]);
+
+  // 语言变更时重新开始动画
+  useEffect(() => {
+    setAnimationComplete(false);
+    setDisplayTitle('');
+    setDisplayDesc('');
+    setDisplayYear('');
+    setDisplayWIP(false);
+    
+    const timer = setTimeout(() => {
+      setOpacity(1);
+      animateText();
+    }, 100); // 短延迟，确保状态已经重置
+    
+    return () => clearTimeout(timer);
+  }, [locale, title, description, year]);
   
   // 文字动画函数
   const animateText = () => {
@@ -162,6 +180,9 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   
   // 计算延迟时间
   const lineAnimationDelay = 0.05 * index;
+
+  // 使用i18n翻译WIP文本
+  const wipText = t('projects.wip');
   
   return (
     <Link 
@@ -178,7 +199,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-black/87 font-jetbrains-mono">
               {displayTitle || (animationComplete ? title : '')}
-              {(displayWIP || animationComplete) && isWIP && <span className="text-primary/70 font-normal ml-1">(开发中)</span>}
+              {(displayWIP || animationComplete) && isWIP && <span className="text-primary/70 font-normal ml-1">{wipText}</span>}
             </span>
           </div>
           <span className="text-sm text-black/54 hidden md:inline-block ml-2">
