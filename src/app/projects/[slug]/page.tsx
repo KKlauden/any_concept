@@ -57,18 +57,19 @@ const Section = ({ title, children }: { title: string; children: ReactNode }) =>
 
 // 生成静态路由参数
 export async function generateStaticParams() {
-  const slugs = getAllProjectSlugs();
+  const slugs = await getAllProjectSlugs();
   return slugs.map((slug: string) => ({ slug }));
 }
 
 // 项目详情页面组件
-export default function ProjectDetailPage({
+export default async function ProjectDetailPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const { slug } = params;
-  const projectData = getProjectBySlug(slug);
+  // 正确的异步处理方式：await params 然后解构
+  const { slug } = await params;
+  const projectData = await getProjectBySlug(slug);
 
   // 如果找不到数据或者项目配置为外部链接，则返回404
   if (!projectData) {

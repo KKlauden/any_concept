@@ -4,9 +4,9 @@ import NavButton from '@/components/NavButton';
 import WorkItem from "@/components/WorkItem";
 import { getAllCrafts } from '../../data/crafts';
 
-export default function CraftPage() {
+export default async function CraftPage() {
   // 获取所有作品数据
-  const works = getAllCrafts();
+  const works = await getAllCrafts();
 
   return (
     <main className="bg-white text-black/87 min-h-screen p-2 pb-36">  

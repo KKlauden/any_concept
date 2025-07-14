@@ -392,19 +392,18 @@ const craftData: CraftDetail[] = [
 ];
 
 // 获取所有作品的slug
-export function getAllCraftSlugs(): string[] {
-  // 只返回没有外部链接的作品的slug
+export async function getAllCraftSlugs(): Promise<string[]> {
   return craftData
-    .filter(craft => !craft.externalLink)
-    .map(craft => craft.slug);
+    .filter((craft) => craft.slug && !craft.externalLink) // 排除外部链接
+    .map((craft) => craft.slug || "");
 }
 
 // 根据slug获取作品详情
-export function getCraftDetail(slug: string): CraftDetail | undefined {
-  return craftData.find(craft => craft.slug === slug);
+export async function getCraftDetail(slug: string): Promise<CraftDetail | undefined> {
+  return craftData.find((craft) => craft.slug === slug);
 }
 
-// 获取所有作品数据（用于列表页面）
-export function getAllCrafts() {
+// 获取所有作品
+export async function getAllCrafts(): Promise<CraftDetail[]> {
   return craftData;
 } 

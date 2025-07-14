@@ -115,39 +115,39 @@ const projectData: Project[] = [
     ],
   },
 
-  {
-    id: "interactive-text",
-    slug: "interactive-text",
-    title: "交互式文本引擎",
-    description: "支持打字机效果和多层级交互内容展示的React组件",
-    year: 2025,
-    techStack: ["React", "TypeScript", "Framer Motion"],
-    detailDescription:
-      "交互式文本引擎是一个专为创意内容展示设计的React组件库，它提供了丰富的文本动画和交互效果，包括打字机效果、文本分词、动态展开和折叠等功能。",
-    projectType: "React组件库",
-    role: "前端开发者",
-    duration: "2023年7月",
-    teamSize: 1,
-    highlights: [
-      "高度可定制的打字机效果",
-      "支持中英文混排自然换行",
-      "多级嵌套内容结构",
-      "动画效果丰富且性能优化",
-    ],
-    challenges: [
-      "实现自然的打字机效果同时保持性能",
-      "处理中英文混排时的分词和换行",
-      "多层级内容的状态管理",
-    ],
-    solutions: [
-      "使用RequestAnimationFrame精确控制动画帧",
-      "实现自定义文本分词算法",
-      "采用Context API进行状态管理",
-    ],
-    images: [
+  // {
+  //   id: "interactive-text",
+  //   slug: "interactive-text",
+  //   title: "交互式文本引擎",
+  //   description: "支持打字机效果和多层级交互内容展示的React组件",
+  //   year: 2025,
+  //   techStack: ["React", "TypeScript", "Framer Motion"],
+  //   detailDescription:
+  //     "交互式文本引擎是一个专为创意内容展示设计的React组件库，它提供了丰富的文本动画和交互效果，包括打字机效果、文本分词、动态展开和折叠等功能。",
+  //   projectType: "React组件库",
+  //   role: "前端开发者",
+  //   duration: "2023年7月",
+  //   teamSize: 1,
+  //   highlights: [
+  //     "高度可定制的打字机效果",
+  //     "支持中英文混排自然换行",
+  //     "多级嵌套内容结构",
+  //     "动画效果丰富且性能优化",
+  //   ],
+  //   challenges: [
+  //     "实现自然的打字机效果同时保持性能",
+  //     "处理中英文混排时的分词和换行",
+  //     "多层级内容的状态管理",
+  //   ],
+  //   solutions: [
+  //     "使用RequestAnimationFrame精确控制动画帧",
+  //     "实现自定义文本分词算法",
+  //     "采用Context API进行状态管理",
+  //   ],
+  //   images: [
       
-    ],
-  },
+  //   ],
+  // },
 
   {
     id: "bilibili-football",
@@ -276,7 +276,7 @@ const projectData: Project[] = [
     projectType: "Web应用",
     role: "全栈开发者",
     duration: "2023年8月 - 2023年9月",
-    teamSize: 2,
+    teamSize: 1,
     highlights: [
       "基于LlamaIndex的智能问答系统",
       "实时赛事数据可视化与分析",
@@ -533,22 +533,22 @@ const projectData: Project[] = [
 ];
 
 // 获取所有项目数据
-export function getAllProjects(): Project[] {
+export async function getAllProjects(): Promise<Project[]> {
   return projectData;
 }
 
 // 通过ID获取特定项目
-export function getProjectById(id: string): Project | undefined {
+export async function getProjectById(id: string): Promise<Project | undefined> {
   return projectData.find((project) => project.id === id);
 }
 
 // 通过slug获取特定项目
-export function getProjectBySlug(slug: string): Project | undefined {
+export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
   return projectData.find((project) => project.slug === slug);
 }
 
 // 获取所有项目的slug
-export function getAllProjectSlugs(): string[] {
+export async function getAllProjectSlugs(): Promise<string[]> {
   return projectData
     .filter((project) => project.slug)
     .map((project) => project.slug || "");

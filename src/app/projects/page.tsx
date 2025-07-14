@@ -1,12 +1,10 @@
-"use client";
-
 import NavButton from '@/components/NavButton';
 import { getAllProjects } from '@/data/projects';
 import ProjectItem from './ProjectItem';
  
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
   // 获取所有项目数据
-  const projects = getAllProjects();
+  const projects = await getAllProjects();
 
   return (
     <main className="min-h-screen bg-white text-black/87 pb-36">

@@ -7,15 +7,15 @@ import MediaRenderer from './MediaRenderer';
 
 // 生成静态路由参数
 export async function generateStaticParams() {
-  const slugs = getAllCraftSlugs();
+  const slugs = await getAllCraftSlugs();
   return slugs.map((slug: string) => ({ slug }));
 }
 
 // 详情页面组件 - 正确处理params
-export default function CraftDetailPage({ params }: { params: { slug: string } }) {
-  // params.slug已经是字符串，不需要await
-  const { slug } = params;
-  const craftData = getCraftDetail(slug);
+export default async function CraftDetailPage({ params }: { params: { slug: string } }) {
+  // 正确的异步处理方式：await params 然后解构
+  const { slug } = await params;
+  const craftData = await getCraftDetail(slug);
   
   // 如果找不到数据或者作品配置为外部链接，则返回404
   if (!craftData || craftData.externalLink) {
