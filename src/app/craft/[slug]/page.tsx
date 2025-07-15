@@ -15,6 +15,8 @@ export default function CraftDetailPage() {
   const { locale, isClient, t } = useLanguage();
   const [craftData, setCraftData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [prevCraft, setPrevCraft] = useState<any>(null);
+  const [nextCraft, setNextCraft] = useState<any>(null);
   const slug = params?.slug as string;
 
   useEffect(() => {
@@ -26,6 +28,25 @@ export default function CraftDetailPage() {
         
         if (!data || data.externalLink) {
           notFound();
+        }
+        
+        // 获取所有作品，用于确定前一个和后一个作品
+        const allCrafts = await craftsModule.getAllCrafts();
+        // 筛选掉有externalLink的作品，因为它们不会有详情页
+        const internalCrafts = allCrafts.filter((craft: { externalLink?: string }) => !craft.externalLink);
+        const currentIndex = internalCrafts.findIndex((c: { slug: string }) => c.slug === slug);
+        
+        // 确定前一个和后一个作品
+        if (currentIndex > 0) {
+          setPrevCraft(internalCrafts[currentIndex - 1]);
+        } else {
+          setPrevCraft(null);
+        }
+        
+        if (currentIndex < internalCrafts.length - 1) {
+          setNextCraft(internalCrafts[currentIndex + 1]);
+        } else {
+          setNextCraft(null);
         }
         
         setCraftData(data);
@@ -86,6 +107,69 @@ export default function CraftDetailPage() {
                     )}
                   </div>
                 ))}
+              </div>
+              
+              {/* 作品导航按钮 */}
+              <div className="mt-20 flex justify-between font-jetbrains-mono">
+                {prevCraft ? (
+                  <Link 
+                    href={`/craft/${prevCraft.slug}`} 
+                    className="flex items-center group hover:text-black text-black/60 transition-colors"
+                  >
+                    <svg 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="mr-2 transition-transform group-hover:-translate-x-1"
+                    >
+                      <path 
+                        d="M15 18L9 12L15 6" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <div>
+                      <div className="text-sm uppercase">{t('craft.previousCraft')}</div>
+                      <div className="text-xs font-medium">{prevCraft.title}</div>
+                    </div>
+                  </Link>
+                ) : (
+                  <div></div>
+                )}
+                
+                {nextCraft ? (
+                  <Link 
+                    href={`/craft/${nextCraft.slug}`} 
+                    className="flex items-center group hover:text-black text-black/60 transition-colors text-right"
+                  >
+                    <div>
+                      <div className="text-sm uppercase">{t('craft.nextCraft')}</div>
+                      <div className="text-xs font-medium">{nextCraft.title}</div>
+                    </div>
+                    <svg 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="ml-2 transition-transform group-hover:translate-x-1"
+                    >
+                      <path 
+                        d="M9 18L15 12L9 6" 
+                        stroke="currentColor" 
+                        strokeWidth="2" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </Link>
+                ) : (
+                  <div></div>
+                )}
               </div>
             </div>
           </>

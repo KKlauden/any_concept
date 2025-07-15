@@ -58,6 +58,8 @@ export default function ProjectDetailPage() {
   const { locale, isClient, t } = useLanguage();
   const [projectData, setProjectData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [prevProject, setPrevProject] = useState<any>(null);
+  const [nextProject, setNextProject] = useState<any>(null);
   const slug = params?.slug as string;
 
   useEffect(() => {
@@ -69,6 +71,23 @@ export default function ProjectDetailPage() {
         
         if (!data) {
           notFound();
+        }
+
+        // 获取所有项目，用于确定前一个和后一个项目
+        const allProjects = await projectsModule.getAllProjects();
+        const currentIndex = allProjects.findIndex((p: { slug: string }) => p.slug === slug);
+        
+        // 确定前一个和后一个项目
+        if (currentIndex > 0) {
+          setPrevProject(allProjects[currentIndex - 1]);
+        } else {
+          setPrevProject(null);
+        }
+        
+        if (currentIndex < allProjects.length - 1) {
+          setNextProject(allProjects[currentIndex + 1]);
+        } else {
+          setNextProject(null);
         }
         
         setProjectData(data);
@@ -280,6 +299,69 @@ export default function ProjectDetailPage() {
                 ))}
               </div>
             )}
+
+            {/* 项目导航按钮 */}
+            <div className="mt-20 flex justify-between font-jetbrains-mono">
+              {prevProject ? (
+                <Link 
+                  href={`/projects/${prevProject.slug}`} 
+                  className="flex items-center group hover:text-black text-black/60 transition-colors"
+                >
+                  <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="mr-2 transition-transform group-hover:-translate-x-1"
+                  >
+                    <path 
+                      d="M15 18L9 12L15 6" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <div>
+                    <div className="text-sm uppercase">{t('projects.previousProject')}</div>
+                    <div className="text-xs font-medium">{prevProject.title}</div>
+                  </div>
+                </Link>
+              ) : (
+                <div></div>
+              )}
+              
+              {nextProject ? (
+                <Link 
+                  href={`/projects/${nextProject.slug}`} 
+                  className="flex items-center group hover:text-black text-black/60 transition-colors text-right"
+                >
+                  <div>
+                    <div className="text-sm uppercase">{t('projects.nextProject')}</div>
+                    <div className="text-xs font-medium">{nextProject.title}</div>
+                  </div>
+                  <svg 
+                    width="20" 
+                    height="20" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="ml-2 transition-transform group-hover:translate-x-1"
+                  >
+                    <path 
+                      d="M9 18L15 12L9 6" 
+                      stroke="currentColor" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              ) : (
+                <div></div>
+              )}
+            </div>
           </>
         )}
       </div>

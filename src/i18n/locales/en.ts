@@ -30,10 +30,14 @@ const en = {
     solutions: 'Solutions',
     references: 'References',
     image: 'Image',
-    wip: '(WIP)'
+    wip: '(WIP)',
+    previousProject: 'Previous',
+    nextProject: 'Next'
   },
   craft: {
-    image: 'Image'
+    image: 'Image',
+    previousCraft: 'Previou',
+    nextCraft: 'Next'
   }
 };
 

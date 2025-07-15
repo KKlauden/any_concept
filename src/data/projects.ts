@@ -34,6 +34,54 @@ export interface ProjectImage {
 // 项目数据
 const projectData: Project[] = [
   {
+    id: "mastea",
+    slug: "mastea",
+    title: "Mastea",
+    description: "AI驱动的个性化养生茶定制平台",
+    year: 2024,
+    techStack: [
+      "Taro",
+      "TypeScript",
+      "TailwindCSS",
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "SQLAlchemy",
+      "OpenAI",
+      "JWT",
+    ],
+
+    detailDescription:
+      "Mastea 是一个基于人工智能的个性化养生茶定制平台，结合传统中医理论和现代科技，为用户提供专属的体质分析和茶饮推荐。通过微信小程序，用户可完成体质测评、获取健康报告、咨询AI养生茶顾问，并选购或定制适合自己的茶品。",
+    projectType: "微信小程序",
+    role: "全栈开发者",
+    duration: "2024年6月 - 进行中",
+    teamSize: 4,
+    isWIP: true,
+    highlights: [
+      "基于中医体质理论的AI智能问诊系统",
+      "个性化茶品推荐引擎",
+      "自然语言交互的AI茶饮顾问",
+      "微信小程序无缝授权与支付集成",
+      "完整的购物车与订单管理系统",
+    ],
+    challenges: [
+      "微信小程序环境下的语法兼容性限制",
+      "TailwindCSS在小程序中的特殊适配",
+      "前后端数据交互的类型安全保障",
+      "中医体质分析与茶品推荐算法的精确性",
+    ],
+    solutions: [
+      "开发兼容微信小程序环境的代码风格规范",
+      "针对小程序环境定制TailwindCSS配置",
+      "使用TypeScript接口定义确保数据一致性",
+      "结合传统中医理论与现代AI技术构建推荐系统",
+    ],
+    images: [
+    
+    ],
+  },
+  {
     id: "absolute-book",
     slug: "absolute-book",
     title: "AbsoluteBook",
@@ -75,9 +123,7 @@ const projectData: Project[] = [
       "设计专用翻译评估链和改进链",
       "基于epub.js构建跨平台阅读器核心",
     ],
-    images: [
-      
-    ],
+    images: [],
   },
 
   {
@@ -110,9 +156,7 @@ const projectData: Project[] = [
       "使用Next.js的图像和字体优化功能",
       "使用CSS变量实现主题切换",
     ],
-    images: [
-     
-    ],
+    images: [],
   },
 
   // {
@@ -145,7 +189,7 @@ const projectData: Project[] = [
   //     "采用Context API进行状态管理",
   //   ],
   //   images: [
-      
+
   //   ],
   // },
 
@@ -199,7 +243,6 @@ const projectData: Project[] = [
         src: "/images/projects/bilibili-football/bilibili_01.jpg",
         alt: "哔哩哔哩足球数据面板",
       },
-    
     ],
   },
   {
@@ -249,7 +292,6 @@ const projectData: Project[] = [
         src: "/images/projects/migu-data-service/migu_01.jpg",
         alt: "咪咕视频数据服务",
       },
-     
     ],
   },
 
@@ -301,7 +343,6 @@ const projectData: Project[] = [
         src: "/images/projects/bravo-gpt/bravo_gpt_01.jpg",
         alt: "Bravo GPT 页面",
       },
-    
     ],
   },
 
@@ -352,7 +393,6 @@ const projectData: Project[] = [
         src: "/images/projects/bravo-website/bravo_website_01.jpg",
         alt: "Bravo Website V3 页面",
       },
-      
     ],
   },
 
@@ -401,8 +441,7 @@ const projectData: Project[] = [
       {
         src: "/images/projects/autobet/autobet_01.jpg",
         alt: "AUTOBET 页面",
-      }
-     
+      },
     ],
   },
   {
@@ -453,7 +492,6 @@ const projectData: Project[] = [
         src: "/images/projects/soccer-ml/soccer_ml_01.jpg",
         alt: "SoccerML 页面",
       },
-    
     ],
     references: [
       {
@@ -527,7 +565,6 @@ const projectData: Project[] = [
         src: "/images/projects/dorgari-videos/dorgari_videos_01.jpg",
         alt: "DorgariVideos 页面",
       },
-     
     ],
   },
 ];
@@ -543,7 +580,9 @@ export async function getProjectById(id: string): Promise<Project | undefined> {
 }
 
 // 通过slug获取特定项目
-export async function getProjectBySlug(slug: string): Promise<Project | undefined> {
+export async function getProjectBySlug(
+  slug: string
+): Promise<Project | undefined> {
   return projectData.find((project) => project.slug === slug);
 }
 

@@ -30,10 +30,14 @@ const zh = {
     solutions: '解决方案',
     references: '参考文献',
     image: '图片',
-    wip: '(开发中)'
+    wip: '(开发中)',
+    previousProject: '上一个',
+    nextProject: '下一个'
   },
   craft: {
-    image: '图片'
+    image: '图片',
+    previousCraft: '上一个',
+    nextCraft: '下一个'
   }
 };
 

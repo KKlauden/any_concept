@@ -34,6 +34,54 @@ export interface ProjectImage {
 // Project data
 const projectData: Project[] = [
   {
+    id: "mastea",
+    slug: "mastea",
+    title: "Mastea",
+    description: "AI-driven tea customization platform",
+    year: 2024,
+    techStack: [
+      "Taro",
+      "TypeScript",
+      "TailwindCSS",
+      "Python",
+      "FastAPI",
+      "PostgreSQL",
+      "SQLAlchemy",
+      "OpenAI",
+      "JWT",
+    ],
+    detailDescription:
+      "Mastea is an AI-powered personalized wellness tea customization platform that combines traditional Chinese medicine theory with modern technology to provide users with exclusive constitution analysis and tea recommendations. Through a WeChat Mini Program, users can complete constitution assessments, receive health reports, consult an AI wellness tea advisor, and purchase or customize teas suitable for their individual needs.",
+    projectType: "WeChat Mini Program",
+    role: "Full-stack Developer",
+    duration: "June 2024 - Ongoing",
+    teamSize: 4,
+    isWIP: true,
+    highlights: [
+      "AI intelligent consultation system based on Chinese medicine constitution theory",
+      "Personalized tea recommendation engine",
+      "Natural language interactive AI tea advisor",
+      "Seamless WeChat Mini Program authorization and payment integration",
+      "Complete shopping cart and order management system",
+    ],
+    challenges: [
+      "Syntax compatibility limitations in the WeChat Mini Program environment",
+      "Special adaptation of TailwindCSS in Mini Programs",
+      "Type-safe data interaction between frontend and backend",
+      "Accuracy of Chinese medicine constitution analysis and tea recommendation algorithms",
+    ],
+    solutions: [
+      "Developed coding style guidelines compatible with WeChat Mini Program environment",
+      "Customized TailwindCSS configuration for Mini Program environment",
+      "Used TypeScript interfaces to ensure data consistency",
+      "Combined traditional Chinese medicine theory with modern AI technology to build recommendation system",
+    ],
+    images: [
+     
+    ],
+  },
+
+  {
     id: "absolute-book",
     slug: "absolute-book",
     title: "AbsoluteBook",
