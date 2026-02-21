@@ -1,0 +1,237 @@
+{
+    "type": "paragraph",
+    "icon_size": 28,
+    "content": [
+      {
+        "type": "text",
+        "text": "你好，我是 Klauden，来自"
+      },
+      {
+        "type": "interactive",
+        "id": "1",
+        "trigger": "中国",
+        "icon": "/images/interactiveText/location.png",
+        "expanded": [
+          {
+            "type": "text",
+            "text": "出生并生活在"
+          },
+          {
+            "type": "image",
+            "src": "/images/interactiveText/shanghai.png",
+            "alt": "shanghai",
+            "width": 86,
+            "height": 34
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "text": "的"
+      },
+      {
+        "type": "interactive",
+        "id": "2",
+        "trigger": "全栈设计师",
+        "icon": "/images/interactiveText/strategy.png",
+        "expanded": [
+          {
+            "type": "text",
+            "text": "我喜欢从 0 到 1 创造数字产品，包括"
+          },
+          {
+            "type": "interactive",
+            "id": "2.1",
+            "trigger": "UI/VI设计",
+            "icon": "/images/interactiveText/draw.png",
+
+            "expanded": [
+              {
+                "type": "text",
+                "text": "使用 Figma 进行界面设计和交互原型制作 ，同时运用"
+              },
+              {
+                "type": "interactive",
+                "id": "2.1.1",
+                "trigger": "图像处理工具",
+                "icon": "/images/interactiveText/magic-wand.png",
+
+                "expanded": [
+                  {
+                    "type": "text",
+                    "text": "Photoshop 处理图像"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": "完成整体"
+              },
+              {
+                "type": "link",
+                "text": "视觉设计",
+                "icon": "/images/interactiveText/monitor.png",
+                "url": "craft"
+                
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "，"
+          },
+          {
+            "type": "interactive",
+            "id": "2.2",
+            "trigger": "前端开发",
+            "icon": "/images/interactiveText/app-window.png",
+
+            "expanded": [
+              {
+                "type": "text",
+                "text": "将设计转化为可交互的用户界面，使用"
+              },
+              {
+                "type": "interactive",
+                "id": "2.2.1",
+                "trigger": "React生态技术",
+                "icon": "/images/interactiveText/network.png",
+
+                "expanded": [
+                  {
+                    "type": "text",
+                    "text": "React 组件化开发，Next.js 全栈应用构建，TypeScript 提升代码质量，TailwindCSS 样式管理"
+                  }
+                ]
+              },
+              {
+                "type": "text",
+                "text": " 和"
+              },
+              {
+                "type": "interactive",
+                "id": "2.2.2",
+                "trigger": "跨端解决方案",
+                "icon": "/images/interactiveText/hierarchy.png",
+                "expanded": [
+                  {
+                    "type": "text",
+                    "text": "使用 Taro 框架构建移动应用、小程序等多端产品，实现高效的跨平台开发，"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "和"
+          },
+          {
+            "type": "interactive",
+            "id": "2.3",
+            "trigger": "后端开发",
+            "icon": "/images/interactiveText/server.png",
+            "expanded": [
+              {
+                "type": "text",
+                "text": "实现服务端架构设计 ️，主要使用"
+              },
+              {
+                "type": "interactive",
+                "id": "2.3.1",
+                "trigger": "Python技术栈",
+                "icon": "/images/interactiveText/it-service.png",
+                "expanded": [
+                  {
+                    "type": "text",
+                    "text": "FastAPI 构建RESTful API，PostgreSQL 数据库设计，Docker 容器化部署"
+                  }
+                ]
+              }
+              
+            ]
+          },
+          {
+            "type": "text",
+            "text": "来完成"
+          },
+          {
+            "text": "项目",
+            "type": "link",
+            "icon": "/images/interactiveText/module-boxes.png",
+            "url": "projects"
+            
+          },
+          {
+            "type": "text",
+            "text": "。我也对"
+          },
+          {
+            "type": "interactive",
+            "id": "2.4",
+            "trigger": "AI技术应用",
+            "icon": "/images/interactiveText/computer-smiley.png",
+            "expanded": [
+              {
+                "type": "text",
+                "text": "探索人工智能在产品中的实际应用 ，如使用 LangChain 开发AI对话系统等"
+              }
+            ]
+          },
+          {
+            "type": "text",
+            "text": "保持着浓厚兴趣。基于工业设计的学习背景，我也具备"
+          },
+          {
+            "type": "interactive",
+            "id": "2.6",
+            "trigger": "产品设计思维",
+            "icon": "/images/interactiveText/pen-idea.png",
+            "expanded": [
+              {
+                "type": "text",
+                "text": "从用户体验角度思考产品设计，"
+              }
+             
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "text": "如果您有"
+      },
+      {
+        "type": "interactive",
+        "id": "3",
+        "trigger": "合作需求",
+        "icon": "/images/interactiveText/teamwork.png",
+        "expanded": [
+          {
+            "type": "text",
+            "text": "如品牌设计、网站开发等产品创新项目，我很乐意为您提供专业的解决方案"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "text": "，欢迎通过"
+      },
+      {
+        "type": "interactive",
+        "id": "4",
+        "trigger": "邮箱",
+        "icon": "/images/interactiveText/mailbox.png",
+        "expanded": [
+          {
+            "type": "text",
+            "text": "kklauden@gmail.com"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "text": "联系，让我们一起创造有价值的产品"
+      }
+    ]
+  }

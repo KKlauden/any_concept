@@ -1,0 +1,226 @@
+@import "tailwindcss";
+
+
+/* 添加主题配置 */
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-jetbrains-mono: var(--font-jetbrains-mono);
+  --font-noto-serif-sc: var(--font-noto-serif-sc);
+  --font-noto-sans-sc: var(--font-noto-sans-sc);
+}
+
+/* 在Tailwind CSS v4中，直接在CSS中定义变量和主题 */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  /* 从tailwind.config.js移动的颜色 */
+  --primary: #FF4100;
+  --secondary: #ffed4a;
+  --danger: #e3342f;
+  --textbg: #F6F5F3;
+  --texthoverbg: #EDEBE7;
+  /* Zinc颜色 */
+  --zinc-50: rgb(251 251 250);
+  --zinc-100: rgb(246 245 243);
+  --zinc-200: rgb(237 235 231);
+  --zinc-300: rgb(212 212 212);
+  --zinc-400: rgb(161 161 161);
+  --zinc-500: rgb(113 113 113);
+  --zinc-600: rgb(82 82 82);
+  --zinc-700: rgb(52 52 52);
+  --zinc-800: rgb(29 29 29);
+  --zinc-900: rgb(20 20 20);
+  --zinc-950: rgb(17 17 17);
+}
+
+.dark {
+  --background: #171717;
+  --foreground: #ffffff;
+  --primary: #FF4100;
+  --primary-foreground: #ffffff;
+  --secondary: #262626;
+  --secondary-foreground: #ffffff;
+  --accent: #262626;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ffffff;
+  --muted: #262626;
+  --muted-foreground: #a3a3a3;
+  --card: #171717;
+  --card-foreground: #ffffff;
+  --popover: #171717;
+  --popover-foreground: #ffffff;
+  --border: #262626;
+  --input: #262626;
+  --ring: #FF4100;
+}
+
+/* 映射变量到Tailwind主题 */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-jetbrains: var(--font-jetbrains-mono);
+  --font-noto-serif: var(--font-noto-serif-sc);
+  --font-noto-sans: var(--font-noto-sans-sc);
+  /* 颜色映射 */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-danger: var(--danger);
+  --color-textbg: var(--textbg);
+  --color-texthoverbg: var(--texthoverbg);
+  /* Zinc颜色映射 */
+  --color-zinc-50: var(--zinc-50);
+  --color-zinc-100: var(--zinc-100);
+  --color-zinc-200: var(--zinc-200);
+  --color-zinc-300: var(--zinc-300);
+  --color-zinc-400: var(--zinc-400);
+  --color-zinc-500: var(--zinc-500);
+  --color-zinc-600: var(--zinc-600);
+  --color-zinc-700: var(--zinc-700);
+  --color-zinc-800: var(--zinc-800);
+  --color-zinc-900: var(--zinc-900);
+  --color-zinc-950: var(--zinc-950);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 启用容器查询 */
+.container {
+  container-type: inline-size;
+}
+
+/* 网格布局样式 */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), var(--grid-column-width));
+  gap: var(--grid-gap);
+}
+
+/* 点击计数器样式 */
+.counter-blinker {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px; /* 使用 Tailwind 的 rounded-full 等效 */
+  background: #ccc;
+  transition: background 100ms;
+}
+
+/* 闪烁效果 */
+@keyframes blinkerPing {
+  0% {
+    background: #ccc;
+  }
+  10% {
+    background: #00FF66;
+  }
+  20% {
+    background: #ccc;
+  }
+  100% {
+    background: #ccc;
+  }
+}
+
+.counter-blinker--idle {
+  animation: blinkerPing 4s infinite;
+}
+
+.counter-blinker--typing {
+  background: #0000EE;
+}
+
+.counter-blinker--active.counter-blinker--local {
+  background: #0000EE;
+}
+
+.counter-blinker--active.counter-blinker--remote {
+  background: #FF0000;
+}
+
+.counter-blinker--ping {
+  background: #00FF66;
+}
+
+/* 可点击单词样式 - 仅保留交互动画效果 */
+.word-clickable {
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.word-clickable:hover {
+  /* transform: translateY(-1px); */
+  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+}
+
+.word-clickable:active {
+  transform: translateY(0);
+}
+
+.word-clickable.clicked {
+  opacity: 0.5;
+}
+
+/* 点击涟漪效果 - 保留，因为这是特殊动画效果 */
+.word-clickable::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(200, 200, 200, 0.4);
+  border-radius: 4px;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.word-clickable:active::after {
+  transform: translate(-50%, -50%) scale(1);
+  opacity: 1;
+  transition: transform 0s, opacity 0.1s;
+}
+
+/* 展开内容样式 */
+.expanded-content {
+  display: inline;
+  position: relative;
+}
+
+/* 确保内容容器允许文本自然换行 */
+.text-container {
+  display: inline;
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* 段落容器 */
+.paragraph {
+  display: inline;
+}
+
+/* 尊重用户的减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
