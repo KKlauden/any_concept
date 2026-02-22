@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import InteractiveText from "@/components/InteractiveText";
-import MouseGlow from "@/components/MouseGlow";
+import PageBackground from "@/components/PageBackground";
 import { introContent } from "@/data/introContent";
 import Link from "next/link";
 
@@ -240,8 +240,7 @@ export default function Home() {
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-hidden">
       {/* 背景层 */}
-      <div className="dot-grid" aria-hidden="true" />
-      <MouseGlow />
+      <PageBackground />
 
       {/* ====== Hero: 全屏视口 ====== */}
       <section className="relative min-h-screen flex flex-col">
@@ -249,7 +248,7 @@ export default function Home() {
 
         {/* 顶部元信息条 */}
         <motion.div
-          className="flex justify-between items-start px-6 md:px-20 lg:px-28 pt-6 md:pt-8"
+          className="flex justify-between items-start px-6 md:px-20 lg:px-28 pt-16 md:pt-20"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.5 }}
@@ -272,7 +271,7 @@ export default function Home() {
         {/* 中心: 巨型名字 */}
         <div className="flex-1 flex items-center px-6 md:px-20 lg:px-28">
           <h1
-            className="font-display font-extrabold leading-[0.85] tracking-[-0.04em] select-none"
+            className="font-display font-extrabold leading-[0.85] tracking-[-0.04em] select-none text-grain"
             style={{ fontSize: "clamp(72px, 15vw, 200px)" }}
           >
             {letters.map((letter, i) => (

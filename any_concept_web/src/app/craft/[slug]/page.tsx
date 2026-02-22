@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { notFound, useParams } from 'next/navigation';
 import MediaRenderer from './MediaRenderer';
-import MouseGlow from '@/components/MouseGlow';
+import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -62,8 +62,7 @@ export default function CraftDetailPage() {
 
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
-      <div className="dot-grid" aria-hidden="true" />
-      <MouseGlow />
+      <PageBackground />
 
       {/* 顶部导航条 */}
       <PageHeader backHref="/craft" backText="BACK TO CRAFT" />

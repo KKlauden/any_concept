@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ProjectItemProps {
   title: string;
@@ -22,7 +22,8 @@ const snappyEasing = (t: number): number => {
 
 // 随机字符生成函数
 const getRandomChar = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
   return chars.charAt(Math.floor(Math.random() * chars.length));
 };
 
@@ -38,9 +39,9 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
 }) => {
   const { locale, t } = useLanguage();
   const [opacity, setOpacity] = useState(0);
-  const [displayTitle, setDisplayTitle] = useState('');
-  const [displayDesc, setDisplayDesc] = useState('');
-  const [displayYear, setDisplayYear] = useState('');
+  const [displayTitle, setDisplayTitle] = useState("");
+  const [displayDesc, setDisplayDesc] = useState("");
+  const [displayYear, setDisplayYear] = useState("");
   const [displayWIP, setDisplayWIP] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
   const intervalsRef = useRef<NodeJS.Timeout[]>([]);
@@ -50,7 +51,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
     intervalsRef.current = [];
   };
 
-  const loadingDelay = 300 + (index * 180);
+  const loadingDelay = 300 + index * 180;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -63,9 +64,9 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   useEffect(() => {
     clearAllIntervals();
     setAnimationComplete(false);
-    setDisplayTitle('');
-    setDisplayDesc('');
-    setDisplayYear('');
+    setDisplayTitle("");
+    setDisplayDesc("");
+    setDisplayYear("");
     setDisplayWIP(false);
 
     const timer = setTimeout(() => {
@@ -87,8 +88,10 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
     const titleInterval = setInterval(() => {
       titleProgress += 0.4;
       if (titleProgress <= 1) {
-        const currentLength = Math.floor(snappyEasing(titleProgress) * title.length);
-        let randomChars = '';
+        const currentLength = Math.floor(
+          snappyEasing(titleProgress) * title.length,
+        );
+        let randomChars = "";
         for (let i = 0; i < Math.min(5, title.length - currentLength); i++) {
           randomChars += getRandomChar();
         }
@@ -105,12 +108,20 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
             const descInterval = setInterval(() => {
               descProgress += 0.015;
               if (descProgress <= 1) {
-                const currentLength = Math.floor(snappyEasing(descProgress) * description.length);
-                let randomChars = '';
-                for (let i = 0; i < Math.min(8, description.length - currentLength); i++) {
+                const currentLength = Math.floor(
+                  snappyEasing(descProgress) * description.length,
+                );
+                let randomChars = "";
+                for (
+                  let i = 0;
+                  i < Math.min(8, description.length - currentLength);
+                  i++
+                ) {
                   randomChars += getRandomChar();
                 }
-                setDisplayDesc(description.substring(0, currentLength) + randomChars);
+                setDisplayDesc(
+                  description.substring(0, currentLength) + randomChars,
+                );
               } else {
                 clearInterval(descInterval);
                 setDisplayDesc(description);
@@ -132,8 +143,10 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
     const yearInterval = setInterval(() => {
       yearProgress += 0.04;
       if (yearProgress <= 1) {
-        const currentLength = Math.floor(snappyEasing(yearProgress) * yearStr.length);
-        let randomChars = '';
+        const currentLength = Math.floor(
+          snappyEasing(yearProgress) * yearStr.length,
+        );
+        let randomChars = "";
         for (let i = 0; i < Math.min(2, yearStr.length - currentLength); i++) {
           randomChars += getRandomChar();
         }
@@ -153,13 +166,13 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
 
   const projectUrl = `/projects/${id}`;
   const lineAnimationDelay = 0.05 * index;
-  const wipText = t('projects.wip');
+  const wipText = t("projects.wip");
 
   return (
     <Link
       href={projectUrl}
       target="_self"
-      className="block outline-none border-b border-white/[0.04] hover:bg-white/[0.04] transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-accent focus-visible:outline-offset-2"
+      className="block outline-none  hover:bg-white/[0.04] transition-colors duration-300 focus-visible:outline-1 focus-visible:outline-accent focus-visible:outline-offset-2"
     >
       <div
         className="flex flex-row items-center px-3 py-3 w-full"
@@ -168,26 +181,28 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
         <div className="flex-1 flex flex-row items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="text-sm font-medium text-foreground font-mono">
-              {displayTitle || (animationComplete ? title : '')}
+              {displayTitle || (animationComplete ? title : "")}
               {(displayWIP || animationComplete) && isWIP && (
-                <span className="text-accent/70 font-normal ml-1">{wipText}</span>
+                <span className="text-accent/70 font-normal ml-1">
+                  {wipText}
+                </span>
               )}
             </span>
           </div>
           <span className="text-sm text-white/35 hidden md:inline-block ml-2">
-            {displayDesc || (animationComplete ? description : '')}
+            {displayDesc || (animationComplete ? description : "")}
           </span>
 
           {/* 线条动画 */}
           <div
             className={`line-animation-${index} mx-4`}
-            style={{ flex: 1, position: 'relative' as const }}
+            style={{ flex: 1, position: "relative" as const }}
           />
         </div>
 
         {/* 年份 */}
         <div className="text-sm text-white/35 font-mono">
-          {displayYear || (animationComplete ? year : '')}
+          {displayYear || (animationComplete ? year : "")}
         </div>
       </div>
 
@@ -227,7 +242,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
           }
           50% {
             width: 50%;
-            background-color: rgba(255, 255, 255, 0.20);
+            background-color: rgba(255, 255, 255, 0.2);
           }
           100% {
             width: 100%;

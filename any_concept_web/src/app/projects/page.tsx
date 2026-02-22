@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import MouseGlow from '@/components/MouseGlow';
+import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
 import ProjectItem from './ProjectItem';
@@ -28,8 +28,7 @@ export default function ProjectsPage() {
 
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
-      <div className="dot-grid" aria-hidden="true" />
-      <MouseGlow />
+      <PageBackground />
 
       <PageHeader
         backHref="/"
@@ -62,7 +61,7 @@ export default function ProjectsPage() {
           transition={{ duration: 0.5, delay: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         >
           <h1
-            className="font-display font-extrabold leading-[0.85] tracking-[-0.05em] text-foreground"
+            className="font-display font-extrabold leading-[0.85] tracking-[-0.05em] text-foreground text-grain"
             style={{ fontSize: 'clamp(44px, 14vw, 148px)', overflowWrap: 'break-word' }}
           >
             PROJECTS

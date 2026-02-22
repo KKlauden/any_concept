@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import LanguageSwitcher from './LanguageSwitcher';
+import React from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 interface PageHeaderProps {
   backHref: string;
@@ -11,10 +11,14 @@ interface PageHeaderProps {
   rightContent?: React.ReactNode;
 }
 
-const PageHeader: React.FC<PageHeaderProps> = ({ backHref, backText, rightContent }) => {
+const PageHeader: React.FC<PageHeaderProps> = ({
+  backHref,
+  backText,
+  rightContent,
+}) => {
   return (
     <motion.header
-      className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-20 lg:px-28 py-4 md:py-6 backdrop-blur-md bg-background/80 border-b border-white/[0.04]"
+      className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-20 lg:px-28 py-4 md:py-6 backdrop-blur-md bg-background/30 border-b border-white/[0.04]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.4, delay: 0.2 }}
@@ -39,9 +43,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({ backHref, backText, rightConten
         {backText}
       </Link>
       <LanguageSwitcher />
-      {rightContent && (
-        <span className="meta-label">{rightContent}</span>
-      )}
+      {rightContent && <span className="meta-label">{rightContent}</span>}
     </motion.header>
   );
 };

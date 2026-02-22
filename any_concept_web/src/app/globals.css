@@ -67,6 +67,12 @@ body {
   color: #000000;
 }
 
+/* ===== 文字噪点纹理 ===== */
+
+.text-grain {
+  filter: url(#grain);
+}
+
 /* ===== 点阵网格背景 ===== */
 
 .dot-grid {
@@ -76,10 +82,85 @@ body {
   pointer-events: none;
   background-image: radial-gradient(
     circle,
-    rgba(255, 255, 255, 0.035) 1px,
+    rgba(255, 255, 255, 0.05) 1px,
     transparent 1px
   );
   background-size: 32px 32px;
+}
+
+/* ===== 双侧光源背景 ===== */
+
+.ambient-glow-left,
+.ambient-glow-right {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ambient-glow-left {
+  background: radial-gradient(
+    ellipse 50% 70% at 0% 25%,
+    color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+    transparent 100%
+  );
+  animation: glow-drift-left 25s ease-in-out infinite alternate;
+}
+
+.ambient-glow-right {
+  background: radial-gradient(
+    ellipse 45% 60% at 100% 55%,
+    color-mix(in srgb, var(--accent) 12%, transparent) 0%,
+    transparent 100%
+  );
+  animation: glow-drift-right 30s ease-in-out infinite alternate;
+}
+
+@keyframes glow-drift-left {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translate(2%, 4%);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-1%, 3%);
+    opacity: 0.65;
+  }
+  75% {
+    transform: translate(1.5%, -2%);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-1%, 3.5%);
+    opacity: 0.75;
+  }
+}
+
+@keyframes glow-drift-right {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.8;
+  }
+  25% {
+    transform: translate(-2%, -3%);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(1.5%, -1%);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-1%, 4%);
+    opacity: 0.65;
+  }
+  100% {
+    transform: translate(2%, -2%);
+    opacity: 0.9;
+  }
 }
 
 /* ===== 鼠标跟随光晕 ===== */
@@ -91,7 +172,7 @@ body {
   pointer-events: none;
   background: radial-gradient(
     600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(255, 107, 0, 0.04),
+    rgba(255, 107, 0, 0.08),
     transparent 80%
   );
 }

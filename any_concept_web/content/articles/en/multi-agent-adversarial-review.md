@@ -1,5 +1,5 @@
 ---
-title: Rethinking Human-AI Collaboration Through Hegelian Dialectics
+title: Solving AI Sycophancy in Coding Tools With Adversarial Multi-Agent Architecture
 slug: dialectical-ai-development
 date: 2026-02-20
 description: Current AI coding tools have a fundamental flaw — they're too obedient. This article explores how Hegelian dialectics can inspire a multi-agent adversarial framework for better AI-assisted development.

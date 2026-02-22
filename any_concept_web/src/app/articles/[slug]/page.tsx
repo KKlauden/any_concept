@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { notFound, useParams } from 'next/navigation';
-import MouseGlow from '@/components/MouseGlow';
+import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -31,8 +31,7 @@ export default function ArticleDetailPage() {
   if (!isClient) {
     return (
       <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
-        <div className="dot-grid" aria-hidden="true" />
-        <MouseGlow />
+        <PageBackground />
         <div className="min-h-[80vh]" />
       </main>
     );
@@ -61,8 +60,7 @@ function ArticleContent({
 
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
-      <div className="dot-grid" aria-hidden="true" />
-      <MouseGlow />
+      <PageBackground />
 
       {/* 顶部导航条 */}
       <PageHeader backHref="/articles" backText={t('articles.backToList')} />
@@ -101,7 +99,7 @@ function ArticleContent({
           className="max-w-3xl mx-auto"
         >
           <h1
-            className="font-display font-extrabold leading-[1.05] tracking-[-0.03em] text-foreground"
+            className="font-display font-extrabold leading-[1.25] tracking-[-0.03em] text-foreground"
             style={{ fontSize: 'clamp(28px, 5vw, 56px)' }}
           >
             {article.title}
@@ -119,7 +117,7 @@ function ArticleContent({
             {article.tags.length > 0 && (
               <>
                 <span className="text-white/10">|</span>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {article.tags.map((tag) => (
                     <span
                       key={tag}
