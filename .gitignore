@@ -26,6 +26,8 @@ build/
 
 # misc
 .DS_Store
+.claude/
+.mcp.json
 *.pem
 
 # debug
