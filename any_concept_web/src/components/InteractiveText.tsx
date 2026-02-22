@@ -1,505 +1,427 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import TypewriterText from './TypewriterText';
 import Image from 'next/image';
 
 /**
- * 数据类型接口定义
+ * 数据类型接口
  */
-// 纯文本项
-export interface TextItem {
-  type: 'text';
-  text: string;
-}
-
-// 可交互项（点击展开）
-export interface InteractiveItem {
-  type: 'interactive';
-  id: string;
-  trigger: string;
-  expanded: ContentItem[];
-  icon?: string;       // 图标路径，可选
-}
-
-// 链接项
-export interface LinkItem {
-  type: 'link';
-  url: string;
-  text: string;
-  icon?: string;       // 图标路径，可选
-}
-
-// 图片项
-export interface ImageItem {
-  type: 'image';
-  src: string;
-  alt: string;
-  width: number;
-  height: number;
-}
-
-// 段落容器
-export interface ParagraphItem {
-  type: 'paragraph';
-  content: ContentItem[];
-  icon_size?: number;  // 图标尺寸，可选，默认为28
-}
-
-// 通用内容项类型（联合类型）
+export interface TextItem { type: 'text'; text: string; }
+export interface InteractiveItem { type: 'interactive'; id: string; trigger: string; expanded: ContentItem[]; icon?: string; }
+export interface LinkItem { type: 'link'; url: string; text: string; icon?: string; }
+export interface ImageItem { type: 'image'; src: string; alt: string; width: number; height: number; }
+export interface ParagraphItem { type: 'paragraph'; content: ContentItem[]; icon_size?: number; }
 export type ContentItem = TextItem | InteractiveItem | LinkItem | ImageItem | ParagraphItem;
-
-// 模块级正则常量，避免每次调用时重新创建
-const ICON_PATH_RE = /\/([^\/]+)\.[^\.]+$/;
-const NON_ASCII_RE = /[^\u0000-\u00ff]/;
-const CJK_TOKEN_RE = /([^\s\p{P}]+)|(\p{P}+)|\s+/gu;
+export interface InteractiveTextProps { data: ContentItem; }
 
 /**
- * 提取图标名称作为alt文本
- * @param iconPath 图标路径
- * @returns Alt文本
+ * SVG 图标系统
  */
-const getIconAlt = (iconPath: string): string => {
-  const match = iconPath.match(ICON_PATH_RE);
-  return match ? match[1] : 'icon';
+const IconMap: Record<string, React.ReactNode> = {
+  code: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 5L2 9L6 13" /><path d="M12 5L16 9L12 13" />
+    </svg>
+  ),
+  pin: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 16L4.5 10.5C2 7.5 4 3 9 3C14 3 16 7.5 13.5 10.5L9 16Z" /><circle cx="9" cy="7.5" r="2" />
+    </svg>
+  ),
+  pen: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M13 2L16 5L6 15H3V12L13 2Z" />
+    </svg>
+  ),
+  window: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="14" height="12" rx="1" /><line x1="2" y1="7" x2="16" y2="7" />
+      <circle cx="4.5" cy="5" r="0.5" fill="currentColor" /><circle cx="6.5" cy="5" r="0.5" fill="currentColor" />
+    </svg>
+  ),
+  server: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="2" width="12" height="5" rx="1" /><rect x="3" y="11" width="12" height="5" rx="1" />
+      <line x1="9" y1="7" x2="9" y2="11" /><circle cx="6" cy="4.5" r="0.5" fill="currentColor" /><circle cx="6" cy="13.5" r="0.5" fill="currentColor" />
+    </svg>
+  ),
+  spark: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 2V5M9 13V16M2 9H5M13 9H16" /><path d="M4.5 4.5L6.5 6.5M11.5 11.5L13.5 13.5M13.5 4.5L11.5 6.5M6.5 11.5L4.5 13.5" />
+    </svg>
+  ),
+  bulb: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M7 15H11M7 13H11" /><path d="M9 2C6 2 4 4.5 4 7C4 9 5.5 10 6 11H12C12.5 10 14 9 14 7C14 4.5 12 2 9 2Z" />
+    </svg>
+  ),
+  handshake: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 8L5 4H8L9 5L10 4H13L16 8L12 12L9 10L6 12L2 8Z" />
+    </svg>
+  ),
+  mail: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="14" height="10" rx="1" /><path d="M2 4L9 10L16 4" />
+    </svg>
+  ),
+  network: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="9" cy="9" r="2" /><circle cx="4" cy="4" r="1.5" /><circle cx="14" cy="4" r="1.5" /><circle cx="14" cy="14" r="1.5" />
+      <line x1="7.5" y1="7.5" x2="5" y2="5" /><line x1="10.5" y1="7.5" x2="13" y2="5" /><line x1="10.5" y1="10.5" x2="13" y2="13" />
+    </svg>
+  ),
+  device: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="3" width="10" height="8" rx="1" /><rect x="10" y="7" width="6" height="9" rx="1" />
+    </svg>
+  ),
+  wand: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 16L11 7" /><path d="M11 7L14 4L16 2" /><path d="M10 3L11 5M14 6L12 7M7 6L9 7" />
+    </svg>
+  ),
+  boxes: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="6" height="6" /><rect x="10" y="2" width="6" height="6" /><rect x="2" y="10" width="6" height="6" /><rect x="10" y="10" width="6" height="6" />
+    </svg>
+  ),
+  eye: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 9C1 9 4 3 9 3C14 3 17 9 17 9C17 9 14 15 9 15C4 15 1 9 1 9Z" /><circle cx="9" cy="9" r="2.5" />
+    </svg>
+  ),
+  arrow: (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 9H14M14 9L10 5M14 9L10 13" />
+    </svg>
+  ),
+};
+
+const renderIcon = (iconKey?: string) => {
+  if (!iconKey || !IconMap[iconKey]) return null;
+  return <span className="inline-flex items-center shrink-0 text-accent">{IconMap[iconKey]}</span>;
 };
 
 /**
- * 文本分词处理，将文本拆分为单词数组
- * @param text 输入文本
- * @returns 单词数组
+ * 动效变体
  */
-const tokenizeText = (text: string): string[] => {
-  const tokens: string[] = [];
+const expandContainerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.04, delayChildren: 0.05 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};
 
-  const containsNonASCII = NON_ASCII_RE.test(text);
+const easeOut: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
 
-  if (containsNonASCII) {
-    // 中文处理：匹配中文字符、西文单词、标点符号等
-    CJK_TOKEN_RE.lastIndex = 0;
-    let match;
+const wordRevealVariants = {
+  hidden: { opacity: 0, y: 6, filter: 'blur(6px)' },
+  visible: {
+    opacity: 1, y: 0, filter: 'blur(0px)',
+    transition: { duration: 0.35, ease: easeOut },
+  },
+};
 
-    while ((match = CJK_TOKEN_RE.exec(text)) !== null) {
-      if (match[0].trim() !== '') {
-        tokens.push(match[0]);
-      } else if (match[0].includes('\n')) {
-        // 处理换行符
-        tokens.push('\n');
-      } else if (match[0].includes(' ')) {
-        // 处理空格
-        tokens.push(' ');
-      }
-    }
-  } else {
-    // 英文处理：保留单词间的空格
-    // 将文本按照单词和空格分割，同时保留标点符号
-    const words = text.split(/(\s+)/);
-    words.forEach(word => {
-      if (word) {
-        tokens.push(word);
-      }
-    });
-  }
-  
-  return tokens;
+const itemRevealVariants = {
+  hidden: { opacity: 0, y: 8, scale: 0.97 },
+  visible: {
+    opacity: 1, y: 0, scale: 1,
+    transition: { duration: 0.3, ease: easeOut },
+  },
 };
 
 /**
- * 单词组件属性
- */
-interface WordProps {
-  text: string;
-  isInteractive?: boolean;   // 是否可交互（可点击）
-  onClick?: () => void;      // 点击处理函数
-  isVisible: boolean;        // 是否可见
-  isDisabled?: boolean;      // 是否禁用（已点击过）
-  children?: React.ReactNode; // 子元素（用于嵌套内容）
-  delay?: number;            // 打字延迟
-  icon?: string;             // 图标路径
-  iconSize?: number;         // 图标尺寸
-}
-
-/**
- * 主组件属性
- */
-export interface InteractiveTextProps {
-  data: ContentItem;  // 内容数据
-}
-
-/**
- * 单词组件 - 渲染单个文本单元
- */
-const Word: React.FC<WordProps> = ({ 
-  text, 
-  isInteractive = false,
-  onClick,
-  isVisible,
-  isDisabled = false,
-  children,
-  delay = 0,
-  icon,
-  iconSize = 28
-}) => {
-  // 处理换行符
-  if (text.startsWith('\n')) {
-    return (
-      <>
-        <br className="mb-0" />
-        <TypewriterText
-          text={text.substring(1)}
-          isVisible={isVisible}
-          isDisabled={isDisabled}
-          isInteractive={isInteractive}
-          delay={delay}
-          onClick={isInteractive && onClick ? onClick : undefined}
-          className="mx-0"
-          icon={icon}
-          iconSize={iconSize}
-        />
-        {children}
-      </>
-    );
-  }
-  
-  return (
-    <>
-      <TypewriterText
-        text={text}
-        isVisible={isVisible}
-        isDisabled={isDisabled}
-        isInteractive={isInteractive}
-        delay={delay}
-        onClick={isInteractive && onClick ? onClick : undefined}
-        className="mx-0"
-        icon={icon}
-        iconSize={iconSize}
-      />
-      {children}
-    </>
-  );
-};
-
-/**
- * 计算内容中的可交互项总数（不包括链接）
- * @param item 内容项
- * @returns 可交互项总数
+ * 计算可交互项总数
  */
 const countInteractiveItems = (item: ContentItem): number => {
   switch (item.type) {
     case 'interactive':
-      // 递归计算子项
       return 1 + item.expanded.reduce((sum, child) => sum + countInteractiveItems(child), 0);
     case 'paragraph':
-      // 递归计算子项
       return item.content.reduce((sum, child) => sum + countInteractiveItems(child), 0);
-    case 'text':
-    case 'link':
-    case 'image':
     default:
       return 0;
   }
 };
 
 /**
- * 交互式文本组件 - 主组件
+ * 进度指示器
+ */
+const ProgressIndicator: React.FC<{ current: number; total: number }> = ({ current, total }) => {
+  if (total === 0) return null;
+  const pct = Math.min((current / total) * 100, 100);
+  const isComplete = current >= total;
+
+  return (
+    <motion.div
+      className="mt-12 md:mt-16"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 1.5, duration: 0.4 }}
+    >
+      {/* 进度条轨道 */}
+      <div className="relative h-[2px] bg-white/8 overflow-hidden">
+        <motion.div
+          className="absolute inset-y-0 left-0"
+          style={{ background: isComplete ? 'var(--accent)' : 'rgba(255,255,255,0.4)' }}
+          initial={{ width: '0%' }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
+        />
+      </div>
+      {/* 计数文字 */}
+      <div className="flex items-center justify-between mt-3 text-[11px] font-mono tracking-[0.15em] uppercase">
+        <span className={isComplete ? 'text-accent' : 'text-white/30'}>
+          {current} / {total}
+        </span>
+        <motion.span
+          className={isComplete ? 'text-accent' : 'text-white/20'}
+          animate={isComplete ? { opacity: [0.5, 1, 0.5] } : {}}
+          transition={isComplete ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : {}}
+        >
+          {isComplete ? 'ALL EXPLORED' : 'EXPLORED'}
+        </motion.span>
+      </div>
+    </motion.div>
+  );
+};
+
+
+/**
+ * InteractiveText 主组件
  */
 const InteractiveText: React.FC<InteractiveTextProps> = ({ data }) => {
-  // 状态管理
-  const [visibleItems, setVisibleItems] = useState<string[]>(['main']); // 默认显示main状态的文字
-  const [typingInProgress, setTypingInProgress] = useState<boolean>(true); // 初始状态为正在打字
-  const [disabledItems, setDisabledItems] = useState<string[]>([]); // 已被点击过的项
-  const [isRemoteClick, setIsRemoteClick] = useState<boolean>(false); // 是否是远程点击
-  const [clickCount, setClickCount] = useState<number>(0); // 点击计数
-  const [totalInteractiveItems, setTotalInteractiveItems] = useState<number>(0); // 可交互项总数
-  // isComplete 从 clickCount 和 totalInteractiveItems 直接计算
-  
-  // 加载动画状态
-  const [showInitialAnimation, setShowInitialAnimation] = useState<boolean>(true); // 是否显示初始动画
-  const [showPrefix, setShowPrefix] = useState<boolean>(false); // 是否显示前缀 "0/"
-  const [animationNumber, setAnimationNumber] = useState<number>(0); // 动画中显示的数字
-  const [showMainContent, setShowMainContent] = useState<boolean>(false); // 是否显示主要内容
-  
-  // 初始化时计算可交互项总数
+  const [visibleItems, setVisibleItems] = useState<string[]>(['main']);
+  const [typingInProgress, setTypingInProgress] = useState<boolean>(false);
+  const [disabledItems, setDisabledItems] = useState<string[]>([]);
+  const [clickCount, setClickCount] = useState(0);
+  const [totalInteractiveItems, setTotalInteractiveItems] = useState(0);
+
   useEffect(() => {
-    const count = countInteractiveItems(data);
-    setTotalInteractiveItems(count);
-    
-    // 初始加载动画
-    if (count > 0) {
-      // 先从0滚动到总数
-      let current = 0;
-      const interval = setInterval(() => {
-        current += 1;
-        setAnimationNumber(current);
-        if (current >= count) {
-          clearInterval(interval);
-          
-          // 滚动结束后，显示前缀 "0/"
-          setTimeout(() => {
-            setShowInitialAnimation(false);
-            setShowPrefix(true);
-            
-            // 前缀出现后，再显示主要内容
-            setTimeout(() => {
-              setShowMainContent(true);
-            }, 200);
-          }, 300);
-        }
-      }, 50); // 更快的滚动速度
-      
-      return () => clearInterval(interval);
-    }
+    setTotalInteractiveItems(countInteractiveItems(data));
   }, [data]);
-  
-  // 直接计算是否完成所有点击
-  const isComplete = totalInteractiveItems > 0 && clickCount >= totalInteractiveItems;
-  
-  // 获取图标尺寸
-  const iconSize = data.type === 'paragraph' ? data.icon_size || 28 : 28;
-  
-  // 设置闪烁效果
-  const blinkerRef = useRef<HTMLSpanElement>(null);
-  const [blinkerState, setBlinkerState] = useState<'idle' | 'typing' | 'active'>('typing');
-  
-  // 初始打字效果完成后改变blinker状态
-  useEffect(() => {
-    // 初始状态为打字中，2秒后结束
-    const typingTimer = setTimeout(() => {
-      setTypingInProgress(false);
-      setBlinkerState('idle');
-    }, 2000);
-    
-    return () => clearTimeout(typingTimer);
-  }, []);
-  
-  // 绿色闪烁效果
-  useEffect(() => {
-    if (blinkerState === 'idle') {
-      // 每隔6秒闪烁一次
-      const pingInterval = setInterval(() => {
-        const el = blinkerRef.current;
-        if (el) {
-          el.classList.add('counter-blinker--ping');
-          setTimeout(() => {
-            el.classList.remove('counter-blinker--ping');
-          }, 500);
-        }
-      }, 6000);
-      
-      return () => clearInterval(pingInterval);
-    }
-  }, [blinkerState]);
-  
-  /**
-   * 处理交互项点击
-   */
-  const handleInteractiveClick = (id: string) => {
-    // 如果正在进行打字动画，不响应点击
+
+  const handleInteractiveClick = useCallback((id: string) => {
     if (typingInProgress) return;
-    
-    // 如果点击的项ID已在可见状态中，则隐藏它
+
     if (visibleItems.includes(id)) {
       setVisibleItems(prev => prev.filter(item => item !== id));
       setDisabledItems(prev => prev.filter(item => item !== id));
       return;
     }
-    
-    // 点击后立即将项添加到已点击列表
+
     setDisabledItems(prev => [...prev, id]);
-    
-    // 触发本地点击效果
-    setIsRemoteClick(false);
-    setBlinkerState('active');
-    
-    // 设置打字动画进行中
     setTypingInProgress(true);
-    
-    // 添加新项到可见状态
     setVisibleItems(prev => [...prev, id]);
-    
-    // 打字效果完成后，关闭打字进行中状态
+    setClickCount(prev => prev + 1);
+
     setTimeout(() => {
       setTypingInProgress(false);
-      setBlinkerState('idle');
-    }, 1000); // 预计打字效果大约持续1秒
-    
-    setClickCount(prev => prev + 1);
-  };
-  
+    }, 400);
+  }, [typingInProgress, visibleItems]);
+
   /**
-   * 递归渲染内容项
-   * @param item 当前内容项
-   * @param index 索引（用于延迟计算）
-   * @param parentId 父级ID（用于嵌套内容）
+   * 交互方框
    */
-  const renderContent = (item: ContentItem, index: number = 0, parentId: string = 'main'): React.ReactNode => {
+  const InteractiveBox = ({ trigger, icon, isDisabled, onClick }: {
+    trigger: string; icon?: string; isDisabled: boolean; onClick: () => void;
+  }) => (
+    <motion.span
+      className={`interactive-box ${isDisabled ? 'interactive-box--disabled' : ''}`}
+      onClick={!isDisabled ? onClick : undefined}
+      role="button"
+      tabIndex={!isDisabled ? 0 : undefined}
+      aria-disabled={isDisabled || undefined}
+      onKeyDown={!isDisabled ? (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); }
+      } : undefined}
+      whileHover={!isDisabled ? { scale: 1.01 } : undefined}
+      whileTap={!isDisabled ? { scale: 0.98 } : undefined}
+    >
+      {renderIcon(icon)}
+      <span>{trigger}</span>
+    </motion.span>
+  );
+
+  /**
+   * 链接方框 — 新标签页打开
+   */
+  const LinkBox = ({ text, url, icon }: { text: string; url: string; icon?: string; }) => (
+    <motion.a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="interactive-box interactive-box--link"
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      {renderIcon(icon)}
+      <span>{text}</span>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="opacity-50 ml-1">
+        <path d="M4 10L10 4M10 4H5.5M10 4V8.5" />
+      </svg>
+    </motion.a>
+  );
+
+  /**
+   * 将文字拆分为单词用于 stagger 动效
+   */
+  const renderStaggeredText = (text: string, parentKey: string) => {
+    const parts = text.split('\n');
+    return parts.map((part, i) => (
+      <React.Fragment key={`${parentKey}-line-${i}`}>
+        {i > 0 && <br />}
+        {part.split(/(\s+)/).map((word, j) => (
+          <motion.span
+            key={`${parentKey}-w-${i}-${j}`}
+            variants={wordRevealVariants}
+            style={{ display: 'inline' }}
+          >
+            {word}
+          </motion.span>
+        ))}
+      </React.Fragment>
+    ));
+  };
+
+  /**
+   * 递归渲染内容
+   */
+  const renderContent = (
+    item: ContentItem,
+    index: number = 0,
+    parentId: string = 'main',
+    isInsideExpansion: boolean = false,
+  ): React.ReactNode => {
     switch (item.type) {
-      // 渲染纯文本
       case 'text': {
-        // 将文本分词处理
-        const tokens = tokenizeText(item.text);
+        if (isInsideExpansion) {
+          return (
+            <React.Fragment key={`text-${parentId}-${index}`}>
+              {renderStaggeredText(item.text, `text-${parentId}-${index}`)}
+            </React.Fragment>
+          );
+        }
+        const parts = item.text.split('\n');
         return (
           <React.Fragment key={`text-${parentId}-${index}`}>
-            {tokens.map((token, tokenIndex) => {
-              if (token === '\n') {
-                return <br key={`br-${parentId}-${index}-${tokenIndex}`} />;
-              }
-              return (
-                <Word
-                  key={`token-${parentId}-${index}-${tokenIndex}`}
-                  text={token}
-                  isInteractive={false}
-                  isVisible={visibleItems.includes(parentId)}
-                  delay={index * 50 + tokenIndex * 20}
-                />
-              );
-            })}
+            {parts.map((part, i) => (
+              <React.Fragment key={i}>
+                {i > 0 && <br />}
+                {part}
+              </React.Fragment>
+            ))}
           </React.Fragment>
         );
       }
-      
-      // 渲染可交互项（有展开内容）
+
       case 'interactive': {
         const isExpanded = visibleItems.includes(item.id);
         const isDisabled = disabledItems.includes(item.id);
-        
+
+        const boxElement = isInsideExpansion ? (
+          <motion.span variants={itemRevealVariants} style={{ display: 'inline' }}>
+            <InteractiveBox
+              trigger={item.trigger}
+              icon={item.icon}
+              isDisabled={isDisabled}
+              onClick={() => handleInteractiveClick(item.id)}
+            />
+          </motion.span>
+        ) : (
+          <InteractiveBox
+            trigger={item.trigger}
+            icon={item.icon}
+            isDisabled={isDisabled}
+            onClick={() => handleInteractiveClick(item.id)}
+          />
+        );
+
         return (
           <React.Fragment key={`interactive-${item.id}`}>
-            <Word
-              text={item.trigger}
-              isInteractive={true}
-              onClick={() => handleInteractiveClick(item.id)}
-              isVisible={visibleItems.includes(parentId)}
-              isDisabled={isDisabled}
-              delay={index * 50}
-              icon={item.icon}
-              iconSize={iconSize}
-            />
-            {isExpanded && (
-              <span className="expanded-content">
-                {item.expanded.map((expandedItem, expandedIndex) => 
-                  renderContent(expandedItem, expandedIndex, item.id)
-                )}
-              </span>
-            )}
+            {boxElement}
+            <AnimatePresence>
+              {isExpanded && (
+                <motion.span
+                  className="expanded-content"
+                  variants={expandContainerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  {item.expanded.map((expandedItem, expandedIndex) =>
+                    renderContent(expandedItem, expandedIndex, item.id, true)
+                  )}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </React.Fragment>
         );
       }
-      
-      // 渲染链接
-      case 'link':
-        return (
-          <a 
-            key={`link-${parentId}-${index}`}
-            href={item.url} 
-            className="text-blue-600 hover:underline relative group"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Word
-              text={item.text}
-              isInteractive={true}
-              isVisible={visibleItems.includes(parentId)}
-              delay={index * 50}
-              icon={item.icon}
-              iconSize={iconSize}
-            />
-            <svg aria-hidden="true" className="absolute -top-2 -right-[2px]" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="6" cy="6" r="6" fill="black"/>
-<path d="M8.875 3.5C8.875 3.29289 8.70711 3.125 8.5 3.125L5.125 3.125C4.91789 3.125 4.75 3.29289 4.75 3.5C4.75 3.70711 4.91789 3.875 5.125 3.875H8.125V6.875C8.125 7.08211 8.29289 7.25 8.5 7.25C8.70711 7.25 8.875 7.08211 8.875 6.875L8.875 3.5ZM4 8L4.26517 8.26517L8.76517 3.76516L8.5 3.5L8.23484 3.23483L3.73483 7.73483L4 8Z" fill="white"/>
-</svg>
-          </a>
-        );
-      
-      // 渲染图片
+
+      case 'link': {
+        const linkElement = <LinkBox text={item.text} url={item.url} icon={item.icon} />;
+        if (isInsideExpansion) {
+          return (
+            <motion.span key={`link-${parentId}-${index}`} variants={itemRevealVariants} style={{ display: 'inline' }}>
+              {linkElement}
+            </motion.span>
+          );
+        }
+        return <React.Fragment key={`link-${parentId}-${index}`}>{linkElement}</React.Fragment>;
+      }
+
       case 'image':
         return (
-          <span key={`image-${parentId}-${index}`} className="inline-block align-middle">
+          <motion.span
+            key={`image-${parentId}-${index}`}
+            className="inline-block align-middle mx-1"
+            variants={isInsideExpansion ? itemRevealVariants : undefined}
+          >
             {visibleItems.includes(parentId) && (
-              <Image
-                src={item.src}
-                alt={item.alt}
-                width={item.width}
-                height={item.height}
-                className="rounded-md"
-              />
+              <Image src={item.src} alt={item.alt} width={item.width} height={item.height} className="invert" />
+            )}
+          </motion.span>
+        );
+
+      case 'paragraph':
+        return (
+          <span key={`paragraph-${parentId}-${index}`} className="paragraph">
+            {item.content.map((contentItem, contentIndex) =>
+              renderContent(contentItem, contentIndex, parentId, isInsideExpansion)
             )}
           </span>
         );
-      
-      // 渲染段落容器
-      case 'paragraph':
-        return (
-          <div key={`paragraph-${parentId}-${index}`} className="paragraph">
-            {item.content.map((contentItem, contentIndex) => 
-              renderContent(contentItem, contentIndex, parentId)
-            )}
-          </div>
-        );
-      
+
       default:
         return null;
     }
   };
-  
+
   return (
-    <div className="interactive-text-container relative">
-      <AnimatePresence>
-        {showMainContent && (
-          <>
-          <motion.div 
-            className="text-container text-xl md:text-2xl flex flex-wrap leading-relaxed tracking-wide"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            {renderContent(data)}
-          </motion.div>
-          <div className='w-full h-12 md:h-28'></div>
-          </>
-        )}
-      </AnimatePresence>
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="counter-container flex flex-row justify-start items-center gap-2 w-full mb-28"
+    <>
+      <motion.div
+        className="interactive-text font-display font-bold uppercase leading-[1.15] tracking-[-0.02em]"
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-80px' }}
+        transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        <span ref={blinkerRef} className={`counter-blinker ${
-          blinkerState === 'typing' ? 'counter-blinker--typing' : 
-          blinkerState === 'active' ? 'counter-blinker--active counter-blinker--local' : 
-          'counter-blinker--idle'
-        }`}></span>
-        <div className="counter-text text-[13px] font-jetbrains font-normal ml-1 tracking-widest">
-          {showInitialAnimation ? (
-            <motion.span
-              key="animation"
-              initial={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className=""
-            >
-              {animationNumber}
-            </motion.span>
-          ) : (
-            <AnimatePresence>
-              {showPrefix && (
-                <motion.span
-                  key="prefix"
-                  initial={{ opacity: 0, x: 5 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.1 }}
-                  className=""
-                >
-                  {clickCount}/
-                </motion.span>
-              )}
-              <span className="">{totalInteractiveItems}</span>
-            </AnimatePresence>
-          )} <span className="">CLICKS</span> {isComplete && " 🎉"}
-        </div>
+        {renderContent(data)}
       </motion.div>
-    </div>
+
+      {/* 进度指示器 */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.3, duration: 0.4 }}
+      >
+        <ProgressIndicator current={clickCount} total={totalInteractiveItems} />
+      </motion.div>
+
+    </>
   );
 };
 

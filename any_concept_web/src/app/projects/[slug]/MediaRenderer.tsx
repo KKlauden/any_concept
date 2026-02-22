@@ -11,42 +11,39 @@ interface MediaRendererProps {
 }
 
 const MediaRenderer = ({ src, alt, priority = false, isVideo }: MediaRendererProps) => {
-  // 检测媒体类型
   const isVideoFile = useMemo(() => {
     if (isVideo !== undefined) return isVideo;
-    return src.endsWith('.mp4') || src.endsWith('.webm') || src.endsWith('.mov');
+    return /\.(mp4|webm|mov)$/i.test(src);
   }, [src, isVideo]);
 
   if (isVideoFile) {
     return (
-      <video 
-        src={src} 
-        className="w-full h-auto rounded-xl" 
+      <video
+        src={src}
+        className="w-full h-auto block"
         controls
         autoPlay={false}
-        muted 
+        muted
         playsInline
       />
     );
   }
 
   return (
-    <div className="relative w-full rounded-xl overflow-hidden bg-zinc-50">
-      <Image 
-        src={src} 
-        alt={alt} 
-        width={1034}
-        height={600}
-        className="w-full h-auto"
-        style={{
-          width: '100%',
-          height: 'auto',
-          maxWidth: '100%'
-        }}
-        priority={priority}
-      />
-    </div>
+    <Image
+      src={src}
+      alt={alt}
+      width={1034}
+      height={600}
+      style={{
+        width: '100%',
+        height: 'auto',
+        maxWidth: '100%',
+        display: 'block',
+      }}
+      priority={priority}
+    />
   );
 };
 
-export default MediaRenderer; 
+export default MediaRenderer;

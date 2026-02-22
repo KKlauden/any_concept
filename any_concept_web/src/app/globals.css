@@ -1,26 +1,22 @@
 @import "tailwindcss";
 
-
-/* 添加主题配置 */
+/* ===== Tailwind v4 主题配置 ===== */
 @theme {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-jetbrains-mono: var(--font-jetbrains-mono);
-  --font-noto-serif-sc: var(--font-noto-serif-sc);
-  --font-noto-sans-sc: var(--font-noto-sans-sc);
+  --font-display: var(--font-syne);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
-/* 在Tailwind CSS v4中，直接在CSS中定义变量和主题 */
+/* ===== 设计系统变量 ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  /* 从tailwind.config.js移动的颜色 */
-  --primary: #FF4100;
-  --secondary: #ffed4a;
-  --danger: #e3342f;
-  --textbg: #F6F5F3;
-  --texthoverbg: #EDEBE7;
-  /* Zinc颜色 */
+  --background: #000000;
+  --foreground: #e8e8e8;
+  --accent: #ff6b00;
+  --muted: #666666;
+  --border: rgba(255, 255, 255, 0.1);
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+
+  /* Zinc 色阶（子页面使用） */
   --zinc-50: rgb(251 251 250);
   --zinc-100: rgb(246 245 243);
   --zinc-200: rgb(237 235 231);
@@ -34,44 +30,15 @@
   --zinc-950: rgb(17 17 17);
 }
 
-.dark {
-  --background: #171717;
-  --foreground: #ffffff;
-  --primary: #FF4100;
-  --primary-foreground: #ffffff;
-  --secondary: #262626;
-  --secondary-foreground: #ffffff;
-  --accent: #262626;
-  --accent-foreground: #ffffff;
-  --destructive: #7f1d1d;
-  --destructive-foreground: #ffffff;
-  --muted: #262626;
-  --muted-foreground: #a3a3a3;
-  --card: #171717;
-  --card-foreground: #ffffff;
-  --popover: #171717;
-  --popover-foreground: #ffffff;
-  --border: #262626;
-  --input: #262626;
-  --ring: #FF4100;
-}
-
-/* 映射变量到Tailwind主题 */
+/* Tailwind 颜色映射 */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-jetbrains: var(--font-jetbrains-mono);
-  --font-noto-serif: var(--font-noto-serif-sc);
-  --font-noto-sans: var(--font-noto-sans-sc);
-  /* 颜色映射 */
-  --color-primary: var(--primary);
-  --color-secondary: var(--secondary);
-  --color-danger: var(--danger);
-  --color-textbg: var(--textbg);
-  --color-texthoverbg: var(--texthoverbg);
-  /* Zinc颜色映射 */
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --font-display: var(--font-syne);
+  --font-mono: var(--font-jetbrains-mono);
+  /* Zinc */
   --color-zinc-50: var(--zinc-50);
   --color-zinc-100: var(--zinc-100);
   --color-zinc-200: var(--zinc-200);
@@ -85,124 +52,178 @@
   --color-zinc-950: var(--zinc-950);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ===== 基础样式 ===== */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jetbrains-mono), "SF Mono", "Fira Code", monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 启用容器查询 */
-.container {
-  container-type: inline-size;
+::selection {
+  background: var(--accent);
+  color: #000000;
 }
 
-/* 网格布局样式 */
-.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-columns), var(--grid-column-width));
-  gap: var(--grid-gap);
+/* ===== 点阵网格背景 ===== */
+
+.dot-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px
+  );
+  background-size: 32px 32px;
 }
 
-/* 点击计数器样式 */
-.counter-blinker {
-  width: 10px;
-  height: 10px;
-  border-radius: 9999px; /* 使用 Tailwind 的 rounded-full 等效 */
-  background: #ccc;
-  transition: background 100ms;
+/* ===== 鼠标跟随光晕 ===== */
+
+.mouse-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 107, 0, 0.04),
+    transparent 80%
+  );
 }
 
-/* 闪烁效果 */
-@keyframes blinkerPing {
-  0% {
-    background: #ccc;
-  }
-  10% {
-    background: #00FF66;
-  }
-  20% {
-    background: #ccc;
-  }
+/* ===== 元信息标签 ===== */
+
+.meta-label {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.meta-label-sub {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== 状态指示点 ===== */
+
+.status-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: status-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes status-pulse {
+  0%,
   100% {
-    background: #ccc;
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.4);
+  }
+  50% {
+    opacity: 0.5;
+    box-shadow: 0 0 0 4px rgba(255, 107, 0, 0);
   }
 }
 
-.counter-blinker--idle {
-  animation: blinkerPing 4s infinite;
+/* ===== 光标闪烁 ===== */
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
 }
 
-.counter-blinker--typing {
-  background: #0000EE;
+.animate-cursor-blink {
+  animation: cursor-blink 1s step-end infinite;
+  color: var(--accent);
 }
 
-.counter-blinker--active.counter-blinker--local {
-  background: #0000EE;
-}
+/* ===== 交互方框样式 ===== */
 
-.counter-blinker--active.counter-blinker--remote {
-  background: #FF0000;
-}
-
-.counter-blinker--ping {
-  background: #00FF66;
-}
-
-/* 可点击单词样式 - 仅保留交互动画效果 */
-.word-clickable {
+.interactive-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.4em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   cursor: pointer;
-  position: relative;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  color: var(--foreground);
+  vertical-align: baseline;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
-.word-clickable:hover {
-  /* transform: translateY(-1px); */
-  /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); */
+.interactive-box:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.05);
 }
 
-.word-clickable:active {
-  transform: translateY(0);
+.interactive-box:active {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.word-clickable.clicked {
-  opacity: 0.5;
+.interactive-box:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
 }
 
-/* 点击涟漪效果 - 保留，因为这是特殊动画效果 */
-.word-clickable::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(200, 200, 200, 0.4);
-  border-radius: 4px;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+.interactive-box--disabled {
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  cursor: default;
 }
 
-.word-clickable:active::after {
-  transform: translate(-50%, -50%) scale(1);
-  opacity: 1;
-  transition: transform 0s, opacity 0.1s;
+.interactive-box--disabled:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: transparent;
 }
 
-/* 展开内容样式 */
+.interactive-box--link {
+  color: var(--foreground);
+  text-decoration: none;
+  border-color: rgba(255, 107, 0, 0.3);
+}
+
+.interactive-box--link:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(255, 107, 0, 0.06);
+}
+
+/* ===== 交互文本容器 ===== */
+
+.interactive-text {
+  font-size: clamp(22px, 4vw, 40px);
+  line-height: 1.15;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* ===== 内容容器 ===== */
+
 .expanded-content {
   display: inline;
   position: relative;
 }
 
-/* 确保内容容器允许文本自然换行 */
 .text-container {
   display: inline;
   white-space: normal;
@@ -210,17 +231,100 @@ body {
   word-break: break-word;
 }
 
-/* 段落容器 */
 .paragraph {
   display: inline;
 }
 
-/* 尊重用户的减少动画偏好 */
+/* ===== 导航链接动效 ===== */
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition:
+    letter-spacing 300ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    color 200ms ease;
+  letter-spacing: 0;
+}
+
+.nav-link:hover {
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
+.nav-link .nav-arrow {
+  transition: transform 300ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.nav-link:hover .nav-arrow {
+  transform: translateX(8px);
+}
+
+/* ===== 作品卡片 ===== */
+
+.craft-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 400ms ease;
+}
+
+.craft-card:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.craft-card__media {
+  transition: transform 600ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.craft-card:hover .craft-card__media {
+  transform: scale(1.03);
+}
+
+.craft-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.75) 0%,
+    rgba(0, 0, 0, 0.3) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.craft-card__external {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 200ms ease;
+}
+
+.craft-card:hover .craft-card__external {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===== 无障碍：减少动画 ===== */
+
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .animate-cursor-blink {
+    animation: none;
+    opacity: 1;
+  }
+
+  .status-dot {
+    animation: none;
+    opacity: 1;
   }
 }

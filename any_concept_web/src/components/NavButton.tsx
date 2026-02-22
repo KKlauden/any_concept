@@ -22,12 +22,12 @@ const NavButton: React.FC = () => {
   return (
     <>
       <button
-        className="fixed bottom-4 right-4 md:bottom-12 md:right-12 z-50 cursor-pointer p-4 focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2 rounded-full"
+        className="fixed bottom-4 right-4 md:bottom-12 md:right-12 z-50 cursor-pointer p-4 focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:outline-none"
         onClick={toggleNav}
         aria-label={isOpen ? '关闭导航菜单' : '打开导航菜单'}
         aria-expanded={isOpen}
       >
-        <div className="w-16 h-16 rounded-full bg-zinc-100 flex items-center justify-center shadow-[0px_4px_8px_0px_rgba(0,0,0,0.04),0px_1px_1px_0px_rgba(0,0,0,0.02)] border border-black/8">
+        <div className="w-14 h-14 bg-zinc-900 flex items-center justify-center" style={{ border: '1px solid var(--crt-green-15)' }}>
           <AnimatePresence mode="popLayout">
             {!isOpen ? (
               <motion.div
@@ -45,7 +45,7 @@ const NavButton: React.FC = () => {
                   alt=""
                   width={28}
                   height={28}
-                  className="object-contain"
+                  className="object-contain invert"
                 />
               </motion.div>
             ) : (
@@ -64,7 +64,7 @@ const NavButton: React.FC = () => {
                   alt=""
                   width={28}
                   height={28}
-                  className="object-contain"
+                  className="object-contain invert"
                 />
               </motion.div>
             )}
@@ -75,7 +75,7 @@ const NavButton: React.FC = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 bg-white z-40"
+            className="fixed inset-0 bg-crt-bg z-40"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -85,7 +85,7 @@ const NavButton: React.FC = () => {
             }}
           >
             
-              <nav className="space-y-8 flex flex-col items-start justify-center font-jetbrains-mono w-[272px] absolute top-28 right-9 lg:top-52 lg:right-60">
+              <nav className="space-y-6 flex flex-col items-start justify-center font-jetbrains-mono w-[272px] absolute top-28 right-9 lg:top-52 lg:right-60 crt-glow-text">
                 <NavItem idx="00" title={t('nav.home')} href="/" />
                 <NavItem idx="01" title={t('nav.craft')} href="/craft" />
                 <NavItem idx="02" title={t('nav.projects')} href="/projects" />
@@ -94,7 +94,7 @@ const NavButton: React.FC = () => {
 
                 <LanguageSwitcher />
               </nav>
-              <div className='flex flex-col items-start justify-center gap-2 text-xs text-black/54 absolute bottom-19 left-8 lg:bottom-auto lg:top-[354px] lg:left-[68px]'>
+              <div className='flex flex-col items-start justify-center gap-1.5 text-[10px] text-white/30 absolute bottom-19 left-8 lg:bottom-auto lg:top-[340px] lg:left-[68px]'>
                 <div>{t('common.copyright')}</div>
                 <div>{t('common.builtWith')}</div>
               </div>
@@ -127,13 +127,13 @@ const NavItem = ({ idx, title, href, isInDevelopment = false }: NavItemProps) =>
       onMouseEnter={() => !isInDevelopment && setIsHovered(true)}
       onMouseLeave={() => !isInDevelopment && setIsHovered(false)}
     >
-      <div className={`text-sm font-normal ${isInDevelopment ? 'text-black/54' : 'text-black/87'}`}>({idx})</div>
-      <div className={`text-4xl font-normal transition-colors duration-200 ${
-        isInDevelopment 
-          ? 'text-black/54 line-through' 
-          : isActive 
-            ? 'text-black/54' 
-            : 'text-black/87 hover:text-black/54'
+      <div className={`text-xs font-normal ${isInDevelopment ? 'text-white/25' : 'text-white/40'}`}>({idx})</div>
+      <div className={`text-2xl font-normal transition-colors duration-100 ${
+        isInDevelopment
+          ? 'text-white/30 line-through'
+          : isActive
+            ? 'text-white/40'
+            : 'text-white/87 hover:text-white/50'
       }`}>
         {(isActive || isHovered) && !isInDevelopment && <span className="mr-2">#</span>}
         {title}
@@ -148,7 +148,7 @@ const NavItem = ({ idx, title, href, isInDevelopment = false }: NavItemProps) =>
   
   // 否则使用Link包装
   return (
-    <Link href={href} className="block rounded-lg focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2">
+    <Link href={href} className="block focus-visible:ring-1 focus-visible:ring-white/40 focus-visible:outline-none">
       {content}
     </Link>
   );

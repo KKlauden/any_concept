@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from "next/image";
-import Link from "next/link";
-import dynamic from 'next/dynamic';
-const NavButton = dynamic(() => import('@/components/NavButton'), { ssr: false });
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { notFound, useParams } from 'next/navigation';
 import MediaRenderer from './MediaRenderer';
+import MouseGlow from '@/components/MouseGlow';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedData } from '@/data/localizedData';
 
-// 详情页面组件
 export default function CraftDetailPage() {
   const params = useParams();
   const { locale, isClient, t } = useLanguage();
@@ -26,7 +25,6 @@ export default function CraftDetailPage() {
         setLoading(true);
         const craftsModule = await getLocalizedData(locale, 'crafts');
 
-        // 并行请求作品数据和全部作品列表
         const [data, allCrafts] = await Promise.all([
           craftsModule.getCraftDetail(slug),
           craftsModule.getAllCrafts(),
@@ -36,16 +34,23 @@ export default function CraftDetailPage() {
           notFound();
         }
 
-        // 筛选掉有externalLink的作品，因为它们不会有详情页
-        const internalCrafts = allCrafts.filter((craft: { externalLink?: string }) => !craft.externalLink);
-        const currentIndex = internalCrafts.findIndex((c: { slug: string }) => c.slug === slug);
+        const internalCrafts = allCrafts.filter(
+          (craft: { externalLink?: string }) => !craft.externalLink
+        );
+        const currentIndex = internalCrafts.findIndex(
+          (c: { slug: string }) => c.slug === slug
+        );
         setPrevCraft(currentIndex > 0 ? internalCrafts[currentIndex - 1] : null);
-        setNextCraft(currentIndex < internalCrafts.length - 1 ? internalCrafts[currentIndex + 1] : null);
+        setNextCraft(
+          currentIndex < internalCrafts.length - 1
+            ? internalCrafts[currentIndex + 1]
+            : null
+        );
 
         setCraftData(data);
         setLoading(false);
       };
-      
+
       fetchData();
     }
   }, [locale, isClient, slug]);
@@ -55,122 +60,234 @@ export default function CraftDetailPage() {
   }
 
   return (
-    <main className="bg-white text-black/87 min-h-screen pb-36">
-      <div className="max-w-[1034px] mx-auto pt-16 md:pt-32 px-2 md:px-16 xl:px-0">
-        {loading ? (
-          // 使用空白页面而非骨架屏
-          <div className="min-h-[80vh]"></div>
-        ) : (
-          <>
-            {/* 顶部导航 */}
-            <div className="font-jetbrains-mono">
-              <div className=" text-sm md:text-base leading-none">(01) {t('nav.craft')}</div>
-              
-              {/* 标题 */}
-              <h1 className="text-4xl md:text-6xl font-bold my-1 md:my-3 leading-tight max-w-2xl">{craftData.title}</h1>
-              
-              {/* 面包屑导航 */}
-              <div className="flex items-center space-x-2 text-xs md:text-sm text-black/54 leading-none">
-                <Link href="/" className="hover:underline">{t('nav.home')}</Link>
-                <span>/</span>
-                <Link href="/craft" className="hover:underline">{t('nav.craft')}</Link>
-                <span>/</span>
-                <span>{craftData.title}</span>
-              </div>
-            </div>
+    <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
+      <div className="dot-grid" aria-hidden="true" />
+      <MouseGlow />
 
-            {/* 主要内容区域 */}
-            <div className="my-12 md:my-24">
-              
-              {/* 图片/视频组合 - 支持视频文件 */}
-              <div className="flex flex-col">
-                {craftData.images?.map((image: any, index: number) => (
-                  <div key={index} className="w-full mb-0">
-                    {/* 使用响应式容器 */}
-                    <div className="w-full">
-                      <MediaRenderer 
-                        src={image.src}
-                        alt={image.alt || `${craftData.title} - ${t('craft.image')} ${index + 1}`}
-                        priority={index < 3}
-                      />
+      {/* 顶部导航条 */}
+      <motion.header
+        className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-20 lg:px-28 py-4 md:py-6 backdrop-blur-md bg-background/80 border-b border-white/[0.04]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <Link
+          href="/craft"
+          className="group flex items-center gap-2 meta-label hover:text-white/40 transition-colors duration-200"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform duration-200 group-hover:-translate-x-0.5"
+          >
+            <path d="M10 7H4M4 7L7 4M4 7L7 10" />
+          </svg>
+          BACK TO CRAFT
+        </Link>
+        <LanguageSwitcher />
+      </motion.header>
+
+      {loading ? (
+        <div className="min-h-[80vh]" />
+      ) : (
+        <>
+          {/* 项目头部 */}
+          <section className="px-6 md:px-20 lg:px-28 pt-16 md:pt-24">
+            <motion.div
+              className="text-[9px] font-mono tracking-[0.25em] text-white/25 uppercase mb-6 md:mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+            >
+              001 — {t('nav.craft')}
+            </motion.div>
+
+            <motion.div
+              className="h-px bg-white/10 mb-10 md:mb-14"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.4,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+            >
+              <h1
+                className="font-display font-extrabold leading-[1] tracking-[-0.04em] text-foreground max-w-4xl"
+                style={{ fontSize: 'clamp(28px, 6vw, 80px)' }}
+              >
+                {craftData.title}
+              </h1>
+              <div className="flex items-center gap-6 mt-4">
+                {craftData.type && (
+                  <span className="meta-label">{craftData.type}</span>
+                )}
+                <span className="meta-label">{craftData.year}</span>
+              </div>
+            </motion.div>
+          </section>
+
+          {/* 图片序列 */}
+          <section className="mt-12 md:mt-20 max-w-[1034px] mx-auto px-4 md:px-8 xl:px-0">
+            <div className="flex flex-col gap-1">
+              {craftData.images?.map((image: any, index: number) => (
+                <motion.div
+                  key={index}
+                  className="w-full border border-white/[0.04]"
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index < 3 ? index * 0.1 : 0,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
+                >
+                  <MediaRenderer
+                    src={image.src}
+                    alt={
+                      image.alt ||
+                      `${craftData.title} - ${t('craft.image')} ${index + 1}`
+                    }
+                    priority={index < 3}
+                  />
+                  {image.caption && (
+                    <p className="text-xs font-mono text-white/20 tracking-wider px-4 py-3">
+                      {image.caption}
+                    </p>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* 上一个/下一个导航 */}
+          <nav className="px-6 md:px-20 lg:px-28 mt-20 md:mt-32">
+            <motion.div
+              className="h-px bg-white/10 mb-8 md:mb-12"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+
+            <div className="flex justify-between items-center">
+              {prevCraft ? (
+                <Link
+                  href={`/craft/${prevCraft.slug}`}
+                  className="group flex items-center gap-3"
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-accent transition-transform duration-300 group-hover:-translate-x-2"
+                  >
+                    <path d="M15 18L9 12L15 6" />
+                  </svg>
+                  <div>
+                    <div className="meta-label mb-1">
+                      {t('craft.previousCraft')}
                     </div>
-                    
-                    {image.caption && (
-                      <p className="text-sm text-black/54 text-center font-jetbrains-mono">{image.caption}</p>
-                    )}
+                    <div className="font-display font-bold text-lg md:text-2xl text-foreground group-hover:text-accent transition-colors duration-200">
+                      {prevCraft.title}
+                    </div>
                   </div>
-                ))}
-              </div>
-              
-              {/* 作品导航按钮 */}
-              <div className="mt-20 flex justify-between font-jetbrains-mono">
-                {prevCraft ? (
-                  <Link
-                    href={`/craft/${prevCraft.slug}`}
-                    className="flex items-center group hover:text-black text-black/60 transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
-                  >
-                    <svg
-                      aria-hidden="true"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="mr-2 transition-transform group-hover:-translate-x-1"
-                    >
-                      <path
-                        d="M15 18L9 12L15 6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    <div>
-                      <div className="text-sm uppercase">{t('craft.previousCraft')}</div>
-                      <div className="text-xs font-medium">{prevCraft.title}</div>
-                    </div>
-                  </Link>
-                ) : (
-                  <div></div>
-                )}
+                </Link>
+              ) : (
+                <div />
+              )}
 
-                {nextCraft ? (
-                  <Link
-                    href={`/craft/${nextCraft.slug}`}
-                    className="flex items-center group hover:text-black text-black/60 transition-colors text-right rounded-lg focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
-                  >
-                    <div>
-                      <div className="text-sm uppercase">{t('craft.nextCraft')}</div>
-                      <div className="text-xs font-medium">{nextCraft.title}</div>
+              {nextCraft ? (
+                <Link
+                  href={`/craft/${nextCraft.slug}`}
+                  className="group flex items-center gap-3 text-right"
+                >
+                  <div>
+                    <div className="meta-label mb-1">
+                      {t('craft.nextCraft')}
                     </div>
-                    <svg
-                      aria-hidden="true"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="ml-2 transition-transform group-hover:translate-x-1"
-                    >
-                      <path
-                        d="M9 18L15 12L9 6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Link>
-                ) : (
-                  <div></div>
-                )}
-              </div>
+                    <div className="font-display font-bold text-lg md:text-2xl text-foreground group-hover:text-accent transition-colors duration-200">
+                      {nextCraft.title}
+                    </div>
+                  </div>
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-accent transition-transform duration-300 group-hover:translate-x-2"
+                  >
+                    <path d="M9 18L15 12L9 6" />
+                  </svg>
+                </Link>
+              ) : (
+                <div />
+              )}
             </div>
-          </>
-        )}
-      </div>
-      <NavButton />
+          </nav>
+
+          {/* 页脚 */}
+          <footer className="px-6 md:px-20 lg:px-28 pt-20 md:pt-28 pb-12">
+            <motion.div
+              className="h-px bg-white/[0.06] mb-8"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+            <motion.div
+              className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-muted font-mono tracking-wider"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+            >
+              <span>&copy; 2025 KLAUDEN &middot; SHANGHAI</span>
+              <a
+                href="mailto:kklauden@gmail.com"
+                className="hover:text-foreground transition-colors duration-200"
+              >
+                kklauden@gmail.com
+              </a>
+            </motion.div>
+          </footer>
+        </>
+      )}
     </main>
   );
-} 
+}

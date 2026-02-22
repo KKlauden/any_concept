@@ -14,6 +14,12 @@ const en = {
   home: {
     title: 'any_concept',
     description: 'Creative Studio',
+    role: 'Full-Stack Designer',
+    available: 'Available for Work',
+    sectionAbout: '001 — About',
+    sectionExplore: '002 — Explore',
+    portfolio: 'Portfolio',
+    selectedWork: 'Selected Design Work',
   },
   projects: {
     projectType: 'Project Type',
@@ -36,7 +42,7 @@ const en = {
   },
   craft: {
     image: 'Image',
-    previousCraft: 'Previou',
+    previousCraft: 'Previous',
     nextCraft: 'Next'
   }
 };

@@ -1,59 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Image from "next/image";
-import Link from "next/link";
-import { notFound, useParams } from "next/navigation";
-import dynamic from "next/dynamic";
-const NavButton = dynamic(() => import("@/components/NavButton"), { ssr: false });
-import MediaRenderer from "./MediaRenderer";
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { notFound, useParams } from 'next/navigation';
+import MediaRenderer from './MediaRenderer';
+import MouseGlow from '@/components/MouseGlow';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedData } from '@/data/localizedData';
 
-// 可复用的标题组件
-const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className=" font-medium text-sm mb-2  text-black/54">{children}</h2>
-);
-
-// 可复用的列表组件
-const ItemList = ({ items }: { items: string[] }) => (
-  <ul className="list-disc pl-5 space-y-2 text-sm">
-    {items.map((item, index) => (
-      <li key={index} className="">{item}</li>
-    ))}
-  </ul>
-);
-
-// 可复用的引用列表组件
-const ReferenceList = ({ references }: { references: { title: string; source: string }[] }) => (
-  <ul className="list-disc pl-5 space-y-2 text-sm">
-    {references.map((reference, index) => (
-      <li key={index} className="">
-        <span className="">{reference.title}</span>
-        {reference.source && (
-          <span className="text-black/54 ml-2 text-sm">
-            — {reference.source}
-          </span>
-        )}
-      </li>
-    ))}
-  </ul>
-);
-
-// 可复用的元数据标题组件
-const MetadataTitle = ({ children }: { children: React.ReactNode }) => (
-  <h3 className="text-xs uppercase text-black/54 mb-1 ">{children}</h3>
-);
-
-// 可复用的区块组件
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <section>
-    <SectionTitle>{title}</SectionTitle>
-    {children}
-  </section>
-);
-
-// 项目详情页面组件
 export default function ProjectDetailPage() {
   const params = useParams();
   const { locale, isClient, t } = useLanguage();
@@ -69,7 +25,6 @@ export default function ProjectDetailPage() {
         setLoading(true);
         const projectsModule = await getLocalizedData(locale, 'projects');
 
-        // 并行请求项目数据和全部项目列表
         const [data, allProjects] = await Promise.all([
           projectsModule.getProjectBySlug(slug),
           projectsModule.getAllProjects(),
@@ -79,14 +34,21 @@ export default function ProjectDetailPage() {
           notFound();
         }
 
-        const currentIndex = allProjects.findIndex((p: { slug: string }) => p.slug === slug);
-        setPrevProject(currentIndex > 0 ? allProjects[currentIndex - 1] : null);
-        setNextProject(currentIndex < allProjects.length - 1 ? allProjects[currentIndex + 1] : null);
+        const currentIndex = allProjects.findIndex(
+          (p: { slug: string }) => p.slug === slug
+        );
+        setPrevProject(
+          currentIndex > 0 ? allProjects[currentIndex - 1] : null
+        );
+        setNextProject(
+          currentIndex < allProjects.length - 1
+            ? allProjects[currentIndex + 1]
+            : null
+        );
 
         setProjectData(data);
         setLoading(false);
       };
-      
       fetchData();
     }
   }, [locale, isClient, slug]);
@@ -95,276 +57,479 @@ export default function ProjectDetailPage() {
     notFound();
   }
 
-  // 提取技术栈
   const techStack = projectData?.techStack || [];
 
   return (
-    <main className="bg-white text-black/87 min-h-screen pb-36">
-      <div className="max-w-[1034px] mx-auto pt-16 md:pt-24 px-4 md:px-16 xl:px-8">
-        {loading ? (
-          // 使用空白页面而非骨架屏
-          <div className="min-h-[80vh]"></div>
-        ) : (
-          <>
-            {/* 顶部导航和标题 */}
-            <div className="font-jetbrains-mono">
-              <div className="text-sm md:text-base leading-none text-black/54">
-                (02) {t('nav.projects')}
-              </div>
+    <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
+      <div className="dot-grid" aria-hidden="true" />
+      <MouseGlow />
 
-              {/* 项目标题 */}
-              <h1 className="text-4xl md:text-6xl font-bold my-3 md:my-6 leading-tight">
+      {/* 顶部导航条 */}
+      <motion.header
+        className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-20 lg:px-28 py-4 md:py-6 backdrop-blur-md bg-background/80 border-b border-white/[0.04]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4, delay: 0.2 }}
+      >
+        <Link
+          href="/projects"
+          className="group flex items-center gap-2 meta-label hover:text-white/50 transition-colors duration-200"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 14 14"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="transition-transform duration-200 group-hover:-translate-x-0.5"
+          >
+            <path d="M10 7H4M4 7L7 4M4 7L7 10" />
+          </svg>
+          BACK TO PROJECTS
+        </Link>
+        <LanguageSwitcher />
+      </motion.header>
+
+      {loading ? (
+        <div className="min-h-[80vh]" />
+      ) : (
+        <>
+          {/* 项目头部 */}
+          <section className="px-6 md:px-20 lg:px-28 pt-16 md:pt-24">
+            <motion.div
+              className="text-[9px] font-mono tracking-[0.25em] text-white/25 uppercase mb-6 md:mb-8"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4, delay: 0.3 }}
+            >
+              002 — {t('nav.projects')}
+            </motion.div>
+
+            <motion.div
+              className="h-px bg-white/10 mb-10 md:mb-14"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.4,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: 0.5,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+            >
+              <h1
+                className="font-display font-extrabold leading-[1] tracking-[-0.04em] text-foreground max-w-4xl"
+                style={{ fontSize: 'clamp(28px, 6vw, 80px)' }}
+              >
                 {projectData.title}
               </h1>
-
-              {/* 面包屑导航 */}
-              <div className="flex items-center space-x-2 text-xs md:text-sm text-black/54 leading-none">
-                <Link href="/" className="hover:underline">
-                  {t('nav.home')}
-                </Link>
-                <span>/</span>
-                <Link href="/projects" className="hover:underline">
-                  {t('nav.projects')}
-                </Link>
-                <span>/</span>
-                <span className="text-black/87">{projectData.title}</span>
+              <div className="flex items-center gap-6 mt-4">
+                {projectData.projectType && (
+                  <span className="meta-label">{projectData.projectType}</span>
+                )}
+                <span className="meta-label">{projectData.year}</span>
+                {projectData.isWIP && (
+                  <span className="text-[10px] font-mono tracking-wider text-accent/70 uppercase">
+                    {t('projects.wip')}
+                  </span>
+                )}
               </div>
-            </div>
+            </motion.div>
+          </section>
 
-            {/* 项目信息卡片 */}
-            <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* 项目信息 — 两栏布局 */}
+          <section className="px-6 md:px-20 lg:px-28 mt-16 md:mt-24">
+            <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-12 md:gap-16">
               {/* 左侧：项目元数据 */}
-              <div className="col-span-1">
-                <div className="bg-zinc-50 p-6 rounded-xl space-y-6">
-                  {/* 项目类型 */}
+              <motion.div
+                className="space-y-6"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+              >
+                {/* 技术栈 */}
+                {techStack.length > 0 && (
                   <div>
-                    <MetadataTitle>{t('projects.projectType')}</MetadataTitle>
-                    <p className="text-sm font-medium">{projectData.projectType}</p>
-                  </div>
-
-                  {/* 技术栈 */}
-                  <div>
-                    <MetadataTitle>{t('projects.techStack')}</MetadataTitle>
+                    <h3 className="meta-label mb-3">
+                      {t('projects.techStack')}
+                    </h3>
                     <div className="flex flex-wrap gap-2">
-                      {techStack.map((tech: string, index: number) => (
+                      {techStack.map((tech: string, i: number) => (
                         <span
-                          key={index}
-                          className="text-xs bg-white px-2 py-1 rounded-md border border-zinc-200 font-jetbrains-mono"
+                          key={i}
+                          className="text-[10px] font-mono tracking-wider px-2.5 py-1 border border-white/[0.08] text-white/50"
                         >
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
+                )}
 
-                  {/* 角色 */}
-                  {projectData.role && (
-                    <div>
-                      <MetadataTitle>{t('projects.role')}</MetadataTitle>
-                      <p className="text-sm">{projectData.role}</p>
-                    </div>
-                  )}
-
-                  {/* 团队规模 */}
-                  {projectData.teamSize && (
-                    <div>
-                      <MetadataTitle>{t('projects.teamSize')}</MetadataTitle>
-                      <p className="text-sm">{projectData.teamSize} {t('projects.teamSizeSuffix')}</p>
-                    </div>
-                  )}
-
-                  {/* 项目周期 */}
-                  {projectData.duration && (
-                    <div>
-                      <MetadataTitle>{t('projects.duration')}</MetadataTitle>
-                      <p className="text-sm">{projectData.duration}</p>
-                    </div>
-                  )}
-
-                  {/* 外部链接 */}
-                  <div className="pt-2 space-y-2">
-                    {projectData.link && (
-                      <a
-                        href={projectData.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm flex items-center font-medium text-black/87 hover:underline"
-                      >
-                        {t('projects.visitWebsite')}
-                        <svg
-                          aria-hidden="true"
-                          className="ml-1 h-3 w-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                          />
-                        </svg>
-                      </a>
-                    )}
-                    {projectData.repo && (
-                      <a
-                        href={projectData.repo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm flex items-center font-medium text-black/87 hover:underline"
-                      >
-                        {t('projects.viewCode')}
-                        <svg
-                          aria-hidden="true"
-                          className="ml-1 h-3 w-3"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                          />
-                        </svg>
-                      </a>
-                    )}
+                {/* 角色 */}
+                {projectData.role && (
+                  <div>
+                    <h3 className="meta-label mb-2">{t('projects.role')}</h3>
+                    <p className="text-sm text-white/60">{projectData.role}</p>
                   </div>
+                )}
+
+                {/* 团队规模 */}
+                {projectData.teamSize && (
+                  <div>
+                    <h3 className="meta-label mb-2">
+                      {t('projects.teamSize')}
+                    </h3>
+                    <p className="text-sm text-white/60">
+                      {projectData.teamSize} {t('projects.teamSizeSuffix')}
+                    </p>
+                  </div>
+                )}
+
+                {/* 项目周期 */}
+                {projectData.duration && (
+                  <div>
+                    <h3 className="meta-label mb-2">
+                      {t('projects.duration')}
+                    </h3>
+                    <p className="text-sm text-white/60">
+                      {projectData.duration}
+                    </p>
+                  </div>
+                )}
+
+                {/* 外部链接 */}
+                <div className="flex flex-col gap-3 pt-2">
+                  {projectData.link && (
+                    <a
+                      href={projectData.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-2 text-sm text-foreground hover:text-accent transition-colors duration-200"
+                    >
+                      {t('projects.visitWebsite')}
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      >
+                        <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" />
+                      </svg>
+                    </a>
+                  )}
+                  {projectData.repo && (
+                    <a
+                      href={projectData.repo}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-2 text-sm text-foreground hover:text-accent transition-colors duration-200"
+                    >
+                      {t('projects.viewCode')}
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      >
+                        <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" />
+                      </svg>
+                    </a>
+                  )}
                 </div>
-              </div>
+              </motion.div>
 
               {/* 右侧：项目详情 */}
-              <div className="col-span-1 md:col-span-2 space-y-10 text-black/87 max-w-[560px]">
+              <motion.div
+                className="space-y-10"
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.1,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+              >
                 {/* 项目描述 */}
-                <Section title={t('projects.overview')}>
-                  <p className=" leading-relaxed text-sm">
+                <div>
+                  <h2 className="meta-label mb-4">{t('projects.overview')}</h2>
+                  <p className="text-sm leading-relaxed text-white/60">
                     {projectData.detailDescription || projectData.description}
                   </p>
-                </Section>
+                </div>
 
                 {/* 项目亮点 */}
                 {projectData.highlights && projectData.highlights.length > 0 && (
-                  <Section title={t('projects.highlights')}>
-                    <ItemList items={projectData.highlights} />
-                  </Section>
+                  <div>
+                    <h2 className="meta-label mb-4">
+                      {t('projects.highlights')}
+                    </h2>
+                    <ul className="space-y-2">
+                      {projectData.highlights.map(
+                        (item: string, i: number) => (
+                          <li
+                            key={i}
+                            className="text-sm text-white/60 pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[9px] before:w-1.5 before:h-px before:bg-accent/50"
+                          >
+                            {item}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
                 )}
 
                 {/* 项目挑战 */}
-                {projectData.challenges && projectData.challenges.length > 0 && (
-                  <Section title={t('projects.challenges')}>
-                    <ItemList items={projectData.challenges} />
-                  </Section>
-                )}
+                {projectData.challenges &&
+                  projectData.challenges.length > 0 && (
+                    <div>
+                      <h2 className="meta-label mb-4">
+                        {t('projects.challenges')}
+                      </h2>
+                      <ul className="space-y-2">
+                        {projectData.challenges.map(
+                          (item: string, i: number) => (
+                            <li
+                              key={i}
+                              className="text-sm text-white/60 pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[9px] before:w-1.5 before:h-px before:bg-white/20"
+                            >
+                              {item}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
-                {/* 项目解决方案 */}
-                {projectData.solutions && projectData.solutions.length > 0 && (
-                  <Section title={t('projects.solutions')}>
-                    <ItemList items={projectData.solutions} />
-                  </Section>
-                )}
+                {/* 解决方案 */}
+                {projectData.solutions &&
+                  projectData.solutions.length > 0 && (
+                    <div>
+                      <h2 className="meta-label mb-4">
+                        {t('projects.solutions')}
+                      </h2>
+                      <ul className="space-y-2">
+                        {projectData.solutions.map(
+                          (item: string, i: number) => (
+                            <li
+                              key={i}
+                              className="text-sm text-white/60 pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[9px] before:w-1.5 before:h-px before:bg-accent/50"
+                            >
+                              {item}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
 
                 {/* 参考文献 */}
-                {projectData.references && projectData.references.length > 0 && (
-                  <Section title={t('projects.references')}>
-                    <ReferenceList references={projectData.references} />
-                  </Section>
-                )}
-              </div>
+                {projectData.references &&
+                  projectData.references.length > 0 && (
+                    <div>
+                      <h2 className="meta-label mb-4">
+                        {t('projects.references')}
+                      </h2>
+                      <ul className="space-y-2">
+                        {projectData.references.map(
+                          (
+                            ref: { title: string; source: string },
+                            i: number
+                          ) => (
+                            <li
+                              key={i}
+                              className="text-sm text-white/60 pl-4 relative before:content-[''] before:absolute before:left-0 before:top-[9px] before:w-1.5 before:h-px before:bg-white/20"
+                            >
+                              {ref.title}
+                              {ref.source && (
+                                <span className="text-white/25 ml-2">
+                                  — {ref.source}
+                                </span>
+                              )}
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </div>
+                  )}
+              </motion.div>
             </div>
+          </section>
 
-            {/* 项目图片/视频 */}
-            {projectData.images && projectData.images.length > 0 && (
-              <div className="mt-16 space-y-6">
+          {/* 项目图片/视频 */}
+          {projectData.images && projectData.images.length > 0 && (
+            <section className="mt-16 md:mt-24 max-w-[1034px] mx-auto px-4 md:px-8 xl:px-0">
+              <div className="flex flex-col gap-1">
                 {projectData.images.map((image: any, index: number) => (
-                  <div key={index} className="w-full">
+                  <motion.div
+                    key={index}
+                    className="w-full border border-white/[0.04]"
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: '-40px' }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index < 3 ? index * 0.1 : 0,
+                      ease: [0.25, 0.1, 0.25, 1],
+                    }}
+                  >
                     <MediaRenderer
                       src={image.src}
-                      alt={image.alt || `${projectData.title} - ${t('projects.image')} ${index + 1}`}
+                      alt={
+                        image.alt ||
+                        `${projectData.title} - ${t('projects.image')} ${index + 1}`
+                      }
                       isVideo={image.isVideo}
                       priority={index < 2}
                     />
                     {image.caption && (
-                      <p className="mt-1 text-xs text-center text-black/54">
+                      <p className="text-xs font-mono text-white/20 tracking-wider px-4 py-3">
                         {image.caption}
                       </p>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            )}
+            </section>
+          )}
 
-            {/* 项目导航按钮 */}
-            <div className="mt-20 flex justify-between font-jetbrains-mono">
+          {/* 上一个/下一个导航 */}
+          <nav className="px-6 md:px-20 lg:px-28 mt-20 md:mt-32">
+            <motion.div
+              className="h-px bg-white/10 mb-8 md:mb-12"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+
+            <div className="flex justify-between items-center">
               {prevProject ? (
                 <Link
                   href={`/projects/${prevProject.slug}`}
-                  className="flex items-center group hover:text-black text-black/60 transition-colors rounded-lg focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
+                  className="group flex items-center gap-3"
                 >
                   <svg
-                    aria-hidden="true"
-                    width="20"
-                    height="20"
+                    width="24"
+                    height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="mr-2 transition-transform group-hover:-translate-x-1"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-accent transition-transform duration-300 group-hover:-translate-x-2"
                   >
-                    <path
-                      d="M15 18L9 12L15 6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M15 18L9 12L15 6" />
                   </svg>
                   <div>
-                    <div className="text-sm uppercase">{t('projects.previousProject')}</div>
-                    <div className="text-xs font-medium">{prevProject.title}</div>
+                    <div className="meta-label mb-1">
+                      {t('projects.previousProject')}
+                    </div>
+                    <div className="font-display font-bold text-lg md:text-2xl text-foreground group-hover:text-accent transition-colors duration-200">
+                      {prevProject.title}
+                    </div>
                   </div>
                 </Link>
               ) : (
-                <div></div>
+                <div />
               )}
-              
+
               {nextProject ? (
                 <Link
                   href={`/projects/${nextProject.slug}`}
-                  className="flex items-center group hover:text-black text-black/60 transition-colors text-right rounded-lg focus-visible:ring-2 focus-visible:ring-black/20 focus-visible:ring-offset-2"
+                  className="group flex items-center gap-3 text-right"
                 >
                   <div>
-                    <div className="text-sm uppercase">{t('projects.nextProject')}</div>
-                    <div className="text-xs font-medium">{nextProject.title}</div>
+                    <div className="meta-label mb-1">
+                      {t('projects.nextProject')}
+                    </div>
+                    <div className="font-display font-bold text-lg md:text-2xl text-foreground group-hover:text-accent transition-colors duration-200">
+                      {nextProject.title}
+                    </div>
                   </div>
                   <svg
-                    aria-hidden="true"
-                    width="20"
-                    height="20"
+                    width="24"
+                    height="24"
                     viewBox="0 0 24 24"
                     fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="ml-2 transition-transform group-hover:translate-x-1"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-accent transition-transform duration-300 group-hover:translate-x-2"
                   >
-                    <path
-                      d="M9 18L15 12L9 6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
+                    <path d="M9 18L15 12L9 6" />
                   </svg>
                 </Link>
               ) : (
-                <div></div>
+                <div />
               )}
             </div>
-          </>
-        )}
-      </div>
-      <NavButton />
+          </nav>
+
+          {/* 页脚 */}
+          <footer className="px-6 md:px-20 lg:px-28 pt-20 md:pt-28 pb-12">
+            <motion.div
+              className="h-px bg-white/[0.06] mb-8"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.6,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              style={{ transformOrigin: 'left' }}
+            />
+            <motion.div
+              className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-muted font-mono tracking-wider"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+            >
+              <span>&copy; 2025 KLAUDEN &middot; SHANGHAI</span>
+              <a
+                href="mailto:kklauden@gmail.com"
+                className="hover:text-foreground transition-colors duration-200"
+              >
+                kklauden@gmail.com
+              </a>
+            </motion.div>
+          </footer>
+        </>
+      )}
     </main>
   );
 }
-
-

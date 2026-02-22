@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { JetBrains_Mono } from 'next/font/google'
+import { JetBrains_Mono, Syne } from 'next/font/google'
 import { Providers } from './providers'
 
 const jetBrainsMono = JetBrains_Mono({
@@ -10,9 +10,16 @@ const jetBrainsMono = JetBrains_Mono({
   display: 'swap',
 })
 
+const syne = Syne({
+  subsets: ['latin'],
+  variable: '--font-syne',
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
-  title: 'any_concept',
-  description: "any concept Website",
+  title: 'KLAUDEN — Full Stack Designer',
+  description: 'Portfolio of Klauden, a full-stack designer based in Shanghai.',
 }
 
 export default function RootLayout({
@@ -21,16 +28,20 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN" className={`${jetBrainsMono.variable}`}>
+    <html
+      lang="zh-CN"
+      className={`${jetBrainsMono.variable} ${syne.variable}`}
+      suppressHydrationWarning
+    >
       <head>
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#000000" />
         <script
           dangerouslySetInnerHTML={{
             __html: `try{var l=localStorage.getItem('locale');if(l==='en'||l==='zh'){document.documentElement.dataset.locale=l;if(l==='en')document.documentElement.lang='en'}}catch(e){}`,
           }}
         />
       </head>
-      <body className="font-sans">
+      <body className="font-mono">
         <Providers>
           {children}
         </Providers>

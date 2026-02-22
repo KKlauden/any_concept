@@ -14,6 +14,12 @@ const zh = {
   home: {
     title: 'any_concept',
     description: '创意工作室',
+    role: '全栈设计师',
+    available: '可接受合作',
+    sectionAbout: '001 — 关于',
+    sectionExplore: '002 — 探索',
+    portfolio: '作品集',
+    selectedWork: '精选设计作品',
   },
   projects: {
     projectType: '项目类型',
