@@ -1,31 +1,31 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { JetBrains_Mono, Syne } from 'next/font/google'
-import { Providers } from './providers'
+import "./globals.css";
+import type { Metadata } from "next";
+import { JetBrains_Mono, Syne } from "next/font/google";
+import { Providers } from "./providers";
 
 const jetBrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 const syne = Syne({
-  subsets: ['latin'],
-  variable: '--font-syne',
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
-})
+  subsets: ["latin"],
+  variable: "--font-syne",
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: 'KLAUDEN — Full Stack Designer',
-  description: 'Portfolio of Klauden, a full-stack designer based in Shanghai.',
-}
+  title: "Klauden",
+  description: "Klauden's personal  website.",
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html
@@ -42,10 +42,8 @@ export default function RootLayout({
         />
       </head>
       <body className="font-mono">
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

@@ -8,6 +8,7 @@ const zh = {
     home: 'HOME',
     projects: 'PROJECTS',
     craft: 'CRAFT',
+    articles: 'ARTICLES',
     photos: 'PHOTOS',
     books: 'BOOKS',
   },
@@ -44,6 +45,13 @@ const zh = {
     image: '图片',
     previousCraft: '上一个',
     nextCraft: '下一个'
+  },
+  articles: {
+    count: 'ARTICLES',
+    backToList: '返回文章',
+    previous: '上一篇',
+    next: '下一篇',
+    empty: '暂无文章'
   }
 };
 

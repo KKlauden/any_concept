@@ -89,8 +89,9 @@ const NavButton: React.FC = () => {
                 <NavItem idx="00" title={t('nav.home')} href="/" />
                 <NavItem idx="01" title={t('nav.craft')} href="/craft" />
                 <NavItem idx="02" title={t('nav.projects')} href="/projects" />
-                <NavItem idx="03" title={t('nav.photos')} href="/photos" isInDevelopment={true} />
-                <NavItem idx="04" title={t('nav.books')} href="/books" isInDevelopment={true} />
+                <NavItem idx="03" title={t('nav.articles')} href="/articles" />
+                <NavItem idx="04" title={t('nav.photos')} href="/photos" isInDevelopment={true} />
+                <NavItem idx="05" title={t('nav.books')} href="/books" isInDevelopment={true} />
 
                 <LanguageSwitcher />
               </nav>

@@ -8,6 +8,7 @@ const en = {
     home: 'HOME',
     projects: 'PROJECTS',
     craft: 'CRAFT',
+    articles: 'ARTICLES',
     photos: 'PHOTOS',
     books: 'BOOKS',
   },
@@ -44,6 +45,13 @@ const en = {
     image: 'Image',
     previousCraft: 'Previous',
     nextCraft: 'Next'
+  },
+  articles: {
+    count: 'ARTICLES',
+    backToList: 'BACK TO ARTICLES',
+    previous: 'Previous',
+    next: 'Next',
+    empty: 'No articles yet'
   }
 };
 

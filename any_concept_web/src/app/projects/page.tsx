@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import MouseGlow from '@/components/MouseGlow';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+import PageHeader from '@/components/PageHeader';
+import PageFooter from '@/components/PageFooter';
 import ProjectItem from './ProjectItem';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getLocalizedData } from '@/data/localizedData';
@@ -31,27 +31,11 @@ export default function ProjectsPage() {
       <div className="dot-grid" aria-hidden="true" />
       <MouseGlow />
 
-      {/* 顶部导航条 */}
-      <motion.header
-        className="sticky top-0 z-50 flex items-center justify-between px-6 md:px-20 lg:px-28 py-4 md:py-6 backdrop-blur-md bg-background/80 border-b border-white/[0.04]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-      >
-        <Link
-          href="/"
-          className="group flex items-center gap-2 meta-label hover:text-white/50 transition-colors duration-200"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:-translate-x-0.5">
-            <path d="M10 7H4M4 7L7 4M4 7L7 10" />
-          </svg>
-          KLAUDEN
-        </Link>
-        <LanguageSwitcher />
-        <span className="meta-label">
-          {!loading && <>{projects.length} PROJECTS</>}
-        </span>
-      </motion.header>
+      <PageHeader
+        backHref="/"
+        backText="KLAUDEN"
+        rightContent={!loading && <>{projects.length} PROJECTS</>}
+      />
 
       {/* 页面标题区 */}
       <section className="px-6 md:px-20 lg:px-28 pt-16 md:pt-24">
@@ -109,32 +93,7 @@ export default function ProjectsPage() {
         )}
       </section>
 
-      {/* 页脚 */}
-      <footer className="px-6 md:px-20 lg:px-28 pt-20 md:pt-28 pb-12">
-        <motion.div
-          className="h-px bg-white/[0.06] mb-8"
-          initial={{ scaleX: 0 }}
-          whileInView={{ scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
-          style={{ transformOrigin: 'left' }}
-        />
-        <motion.div
-          className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-muted font-mono tracking-wider"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
-        >
-          <span>&copy; 2025 KLAUDEN &middot; SHANGHAI</span>
-          <a
-            href="mailto:kklauden@gmail.com"
-            className="hover:text-foreground transition-colors duration-200"
-          >
-            kklauden@gmail.com
-          </a>
-        </motion.div>
-      </footer>
+      <PageFooter />
     </main>
   );
 }

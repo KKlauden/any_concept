@@ -332,11 +332,12 @@ export default function Home() {
 
         <NavLink href="/craft" label="CRAFT" num="01" index={0} />
         <NavLink href="/projects" label="PROJECTS" num="02" index={1} />
+        <NavLink href="/articles" label="ARTICLES" num="03" index={2} />
         <NavLink
           href="mailto:kklauden@gmail.com"
           label="CONTACT"
-          num="03"
-          index={2}
+          num="04"
+          index={3}
           external
         />
       </nav>
@@ -358,7 +359,7 @@ export default function Home() {
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
         >
-          <span>&copy; 2025 KLAUDEN &middot; SHANGHAI</span>
+          <span>&copy; 2026 KLAUDEN &middot; SHANGHAI</span>
           <a
             href="mailto:kklauden@gmail.com"
             className="hover:text-foreground transition-colors duration-200"
