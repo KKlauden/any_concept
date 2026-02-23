@@ -1,6 +1,6 @@
 ---
 title: 用对抗式多智能体架构解决 AI 编程工具的谄媚问题
-slug: dialectical-ai-development
+slug: multi-agent-adversarial-review
 date: 2026-02-20
 description: 当前的 AI 编程工具存在一个根本性缺陷——它们太听话了。本文探讨如何借鉴黑格尔辩证法，设计一种多智能体对抗式的开发框架。
 tags:

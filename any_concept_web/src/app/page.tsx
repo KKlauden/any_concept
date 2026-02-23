@@ -257,7 +257,7 @@ export default function Home() {
             <span className="meta-label">Full-Stack Designer</span>
             <span className="meta-label-sub flex items-center gap-1.5">
               <span className="status-dot" />
-              Available for Work
+              Available
             </span>
           </div>
           <div className="flex flex-col gap-1 items-end">

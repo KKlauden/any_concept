@@ -67,6 +67,83 @@ body {
   color: #000000;
 }
 
+/* ===== 自定义光标 ===== */
+
+@media (hover: hover) {
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 4px;
+  margin-top: -2px;
+  margin-left: -2px;
+  background: transparent;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform;
+  transition:
+    width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    height 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    margin 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    opacity 0.15s ease;
+  border: 1.5px solid transparent;
+  mix-blend-mode: difference;
+}
+
+/* 十字准线 */
+.custom-cursor::before,
+.custom-cursor::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--accent);
+  transition:
+    width 0.25s cubic-bezier(0.25, 0.1, 0.25, 1),
+    height 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+.custom-cursor::before {
+  width: 22px;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor::after {
+  width: 1px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+}
+
+/* Hover: 十字收缩，圆点变圆环 */
+.custom-cursor--hover {
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  margin-left: -12px;
+  background: transparent;
+  border-color: var(--accent);
+}
+
+.custom-cursor--hover::before {
+  width: 0;
+}
+
+.custom-cursor--hover::after {
+  height: 0;
+}
+
 /* ===== 文字噪点纹理 ===== */
 
 .text-grain {
@@ -277,6 +354,22 @@ body {
   background: transparent;
 }
 
+/* 未探索方框呼吸脉动 */
+
+@keyframes box-breathe {
+  0%,
+  100% {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  50% {
+    border-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+.interactive-box--unexplored {
+  animation: box-breathe 2.5s ease-in-out infinite;
+}
+
 .interactive-box--link {
   color: var(--foreground);
   text-decoration: none;
@@ -303,6 +396,74 @@ body {
 .expanded-content {
   display: inline;
   position: relative;
+}
+
+/* 展开内容深度层级 */
+
+.expanded-content--depth-1 {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.expanded-content--depth-2 {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.expanded-content--depth-deep {
+  color: var(--accent);
+}
+
+/* 深度竖线指示器 */
+
+.depth-indicator {
+  display: inline-block;
+  width: 1px;
+  height: 0.8em;
+  vertical-align: middle;
+  margin-right: 0.3em;
+}
+
+.depth-indicator--subtle {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.depth-indicator--accent {
+  background: rgba(255, 107, 0, 0.3);
+}
+
+/* 展开光标 */
+
+@keyframes cursor-fade-out {
+  0%,
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.expand-cursor {
+  animation:
+    cursor-blink 1s step-end infinite,
+    cursor-fade-out var(--cursor-lifetime, 1s) ease forwards;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+/* 进度条完成发光 */
+
+@keyframes progress-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 4px rgba(255, 107, 0, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(255, 107, 0, 0.6);
+  }
+}
+
+.progress-bar--complete {
+  animation: progress-glow 2s ease-in-out infinite;
 }
 
 .text-container {
@@ -562,5 +723,20 @@ body {
   .status-dot {
     animation: none;
     opacity: 1;
+  }
+
+  .interactive-box--unexplored {
+    animation: none;
+    border-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .expand-cursor {
+    animation: none;
+    opacity: 0;
+  }
+
+  .progress-bar--complete {
+    animation: none;
+    box-shadow: 0 0 6px rgba(255, 107, 0, 0.4);
   }
 }
