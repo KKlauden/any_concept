@@ -25,6 +25,7 @@ export const introContent: ContentItem = {
               type: 'interactive',
               id: 'sleep',
               trigger: 'SLEEP',
+              icon: 'moon',
               expanded: [
                 { type: 'text', text: " — SO YOU END UP WRITING 10,000 WORDS AT 3AM" },
               ],
@@ -65,6 +66,7 @@ export const introContent: ContentItem = {
           type: 'interactive',
           id: 'survivors',
           trigger: 'SURVIVORS',
+          icon: 'shield',
           expanded: [
             { type: 'text', text: " — NATURAL SELECTION, BUT FOR SIDE PROJECTS" },
           ],
@@ -97,6 +99,7 @@ export const introContent: ContentItem = {
               type: 'interactive',
               id: 'framework',
               trigger: 'FRAMEWORK',
+              icon: 'layers',
               expanded: [
                 {
                   type: 'text',
@@ -114,12 +117,14 @@ export const introContent: ContentItem = {
       type: 'interactive',
       id: 'hours',
       trigger: 'UNREASONABLE HOURS',
+      icon: 'clock',
       expanded: [
         { type: 'text', text: " — BETWEEN 1AM AND 4AM. MY " },
         {
           type: 'interactive',
           id: 'coffee',
           trigger: 'COFFEE',
+          icon: 'cup',
           expanded: [
             { type: 'text', text: " — BLACK. NO SUGAR. NON-NEGOTIABLE." },
           ],
@@ -144,6 +149,6 @@ export const introContent: ContentItem = {
         },
       ],
     },
-    { type: 'text', text: ". KKLAUDEN@GMAIL.COM." },
+    { type: 'text', text: "." },
   ],
 };

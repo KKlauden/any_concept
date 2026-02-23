@@ -147,7 +147,14 @@ body {
 /* ===== 文字噪点纹理 ===== */
 
 .text-grain {
-  filter: url(#grain);
+  background:
+    url('/images/noise.png') repeat,
+    linear-gradient(var(--foreground), var(--foreground));
+  background-size: 128px 128px, 100% 100%;
+  background-blend-mode: multiply;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 /* ===== 点阵网格背景 ===== */
@@ -173,7 +180,6 @@ body {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  will-change: transform, opacity;
 }
 
 .ambient-glow-left {

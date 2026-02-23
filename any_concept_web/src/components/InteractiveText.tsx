@@ -286,6 +286,82 @@ const IconMap: Record<string, React.ReactNode> = {
       <path d="M4 9H14M14 9L10 5M14 9L10 13" />
     </svg>
   ),
+  moon: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M15 10.5C14 13.5 11 16 7.5 16C3.5 16 1 12.5 1 9C1 5.5 3 2.5 7 2C6 4 6 6.5 7.5 9C9 11.5 12 12 15 10.5Z" />
+    </svg>
+  ),
+  shield: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 2L3 5V9C3 12.5 5.5 15.5 9 17C12.5 15.5 15 12.5 15 9V5L9 2Z" />
+    </svg>
+  ),
+  layers: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 2L2 6L9 10L16 6L9 2Z" />
+      <path d="M2 9L9 13L16 9" />
+      <path d="M2 12L9 16L16 12" />
+    </svg>
+  ),
+  clock: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="9" cy="9" r="7" />
+      <path d="M9 5V9L12 11" />
+    </svg>
+  ),
+  cup: (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M3 3H13V10C13 12.5 11 14 8 14C5 14 3 12.5 3 10V3Z" />
+      <path d="M13 5H15C15.5 5 16 5.5 16 6V7C16 8 15 9 14 9H13" />
+      <line x1="5" y1="16" x2="11" y2="16" />
+      <line x1="8" y1="14" x2="8" y2="16" />
+    </svg>
+  ),
 };
 
 const renderIcon = (iconKey?: string) => {

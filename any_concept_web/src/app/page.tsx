@@ -98,6 +98,47 @@ const CornerMarkers = () => (
 );
 
 /**
+ * 字母动画注册表 — 单个 mousemove 驱动所有字母
+ */
+type LetterEntry = {
+  el: HTMLSpanElement;
+  y: ReturnType<typeof useMotionValue<number>>;
+};
+const letterRegistry: LetterEntry[] = [];
+let letterMouseInit = false;
+
+function registerKineticLetter(el: HTMLSpanElement, y: LetterEntry["y"]) {
+  const entry = { el, y };
+  letterRegistry.push(entry);
+
+  if (!letterMouseInit) {
+    const mq = window.matchMedia("(hover: hover)");
+    if (mq.matches) {
+      window.addEventListener(
+        "mousemove",
+        (e: MouseEvent) => {
+          for (const { el, y } of letterRegistry) {
+            const rect = el.getBoundingClientRect();
+            const dist = Math.hypot(
+              e.clientX - (rect.left + rect.width / 2),
+              e.clientY - (rect.top + rect.height / 2),
+            );
+            y.set(dist < 250 ? (1 - dist / 250) * -24 : 0);
+          }
+        },
+        { passive: true },
+      );
+    }
+    letterMouseInit = true;
+  }
+
+  return () => {
+    const idx = letterRegistry.indexOf(entry);
+    if (idx >= 0) letterRegistry.splice(idx, 1);
+  };
+}
+
+/**
  * 动态字母组件 — 鼠标接近时产生弹性位移
  */
 const KineticLetter = ({ char, index }: { char: string; index: number }) => {
@@ -106,38 +147,14 @@ const KineticLetter = ({ char, index }: { char: string; index: number }) => {
   const springY = useSpring(y, { stiffness: 300, damping: 20, mass: 0.8 });
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return;
-      const rect = ref.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distX = e.clientX - centerX;
-      const distY = e.clientY - centerY;
-      const dist = Math.sqrt(distX * distX + distY * distY);
-      const maxDist = 250;
-
-      if (dist < maxDist) {
-        const force = (1 - dist / maxDist) * -10;
-        y.set(force);
-      } else {
-        y.set(0);
-      }
-    };
-
-    const mq = window.matchMedia("(hover: hover)");
-    if (mq.matches) {
-      window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    }
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
+    if (!ref.current) return;
+    return registerKineticLetter(ref.current, y);
   }, [y]);
 
   return (
     <motion.span
       ref={ref}
-      className="inline-block"
+      className="inline-block text-grain"
       style={{ y: springY }}
       initial={{ y: 40, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -149,6 +166,77 @@ const KineticLetter = ({ char, index }: { char: string; index: number }) => {
     >
       {char}
     </motion.span>
+  );
+};
+
+/**
+ * 复制邮箱 — 点击后文字 roller 切换为 COPIED
+ */
+const CopyEmail = ({ index }: { index: number }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleClick = async () => {
+    if (copied) return;
+    try {
+      await navigator.clipboard.writeText("kklauden@gmail.com");
+    } catch {
+      // 静默降级
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <motion.div
+      className="nav-link text-3xl md:text-5xl font-display font-bold text-foreground py-3 md:py-4 select-none"
+      initial={{ opacity: 0, x: -20 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.1,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+      onClick={handleClick}
+      role="button"
+      tabIndex={0}
+    >
+      <span className="text-xs font-mono text-white/30 mr-4 align-middle tracking-wider">
+        04
+      </span>
+      <span
+        className="inline-flex flex-col overflow-hidden"
+        style={{ height: "1.15em" }}
+      >
+        <motion.span
+          className="block shrink-0"
+          style={{ height: "1.15em", lineHeight: "1.15em" }}
+          animate={{ y: copied ? "-100%" : "0%" }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          EMAIL
+        </motion.span>
+        <motion.span
+          className="block shrink-0 text-accent"
+          style={{ height: "1.15em", lineHeight: "1.15em" }}
+          animate={{ y: copied ? "-100%" : "0%" }}
+          transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          COPIED
+        </motion.span>
+      </span>
+      <motion.span
+        className="text-accent ml-3 text-2xl md:text-3xl"
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{
+          opacity: copied ? 1 : 0,
+          scale: copied ? 1 : 0.5,
+        }}
+        transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        ✓
+      </motion.span>
+    </motion.div>
   );
 };
 
@@ -271,7 +359,7 @@ export default function Home() {
         {/* 中心: 巨型名字 */}
         <div className="flex-1 flex items-center px-6 md:px-20 lg:px-28">
           <h1
-            className="font-display font-extrabold leading-[0.85] tracking-[-0.04em] select-none text-grain"
+            className="font-display font-extrabold leading-[0.85] tracking-[-0.04em] select-none"
             style={{ fontSize: "clamp(72px, 15vw, 200px)" }}
           >
             {letters.map((letter, i) => (
@@ -332,13 +420,7 @@ export default function Home() {
         <NavLink href="/craft" label="CRAFT" num="01" index={0} />
         <NavLink href="/projects" label="PROJECTS" num="02" index={1} />
         <NavLink href="/articles" label="ARTICLES" num="03" index={2} />
-        <NavLink
-          href="mailto:kklauden@gmail.com"
-          label="CONTACT"
-          num="04"
-          index={3}
-          external
-        />
+        <CopyEmail index={3} />
       </nav>
 
       {/* ====== 页脚 ====== */}
