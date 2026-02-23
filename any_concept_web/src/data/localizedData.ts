@@ -14,18 +14,13 @@ interface LocalizedProjects {
   getAllProjectSlugs: () => Promise<string[]>;
 }
 
-type LocalizedDataKey = 'introtext' | 'crafts' | 'projects';
+type LocalizedDataKey = 'crafts' | 'projects';
 
 // 函数重载：根据 key 推断返回类型
-export async function getLocalizedData(locale: Locale, key: 'introtext'): Promise<any>;
 export async function getLocalizedData(locale: Locale, key: 'crafts'): Promise<LocalizedCrafts>;
 export async function getLocalizedData(locale: Locale, key: 'projects'): Promise<LocalizedProjects>;
 export async function getLocalizedData(locale: Locale, key: LocalizedDataKey) {
   switch (key) {
-    case 'introtext':
-      return locale === 'zh'
-        ? (await import('./introtext.json')).default
-        : (await import('./introtext_en.json')).default;
     case 'crafts':
       return locale === 'zh'
         ? await import('./crafts') as unknown as LocalizedCrafts

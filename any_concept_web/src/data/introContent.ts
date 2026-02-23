@@ -139,14 +139,7 @@ export const introContent: ContentItem = {
       trigger: 'SHANGHAI',
       icon: 'pin',
       expanded: [
-        { type: 'text', text: " — 31.23°N 121.47°E " },
-        {
-          type: 'image',
-          src: '/images/interactiveText/shanghai.png',
-          alt: 'Shanghai',
-          width: 86,
-          height: 34,
-        },
+        { type: 'text', text: " — 31.23°N 121.47°E" },
       ],
     },
     { type: 'text', text: "." },
