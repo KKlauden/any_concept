@@ -417,9 +417,9 @@ export default function Home() {
           style={{ transformOrigin: "left" }}
         />
 
-        <NavLink href="/craft" label="CRAFT" num="01" index={0} />
-        <NavLink href="/projects" label="PROJECTS" num="02" index={1} />
-        <NavLink href="/articles" label="ARTICLES" num="03" index={2} />
+        <NavLink href="/projects" label="PROJECTS" num="01" index={0} />
+        <NavLink href="/articles" label="ARTICLES" num="02" index={1} />
+        <NavLink href="/craft" label="CRAFT" num="03" index={2} />
         <CopyEmail index={3} />
       </nav>
 

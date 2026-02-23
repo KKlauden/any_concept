@@ -19,6 +19,12 @@ export type WorkItemProps = {
   index?: number;
 };
 
+const getExternalLabel = (url?: string): string => {
+  if (!url) return "↗";
+  if (url.includes("figma.com")) return "FIGMA";
+  return "VISIT";
+};
+
 const WorkItem = ({
   title,
   year,
@@ -84,8 +90,9 @@ const WorkItem = ({
       {/* 外部链接标记 */}
       {hasExternal && (
         <div className="craft-card__external">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M5 11L11 5M11 5H6M11 5V10" />
+          <span className="craft-card__external-label">{getExternalLabel(link)}</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5" />
           </svg>
         </div>
       )}

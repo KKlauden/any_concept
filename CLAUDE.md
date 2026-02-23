@@ -1,66 +1,42 @@
-# any_concept
+# any_concept — AI 上下文
 
-Klauden 的个人作品集网站。
+## 项目概述
 
-## 技术栈
+klauden.xyz 个人网站，Next.js 15 + React 19 + Tailwind v4 + Framer Motion。
+Vercel 部署，Root Directory 为 `any_concept_web`。
 
-- **框架**: Next.js 15 (App Router) + React 19 + TypeScript
-- **样式**: Tailwind CSS v4 + 自定义 CSS 变量
-- **动画**: Framer Motion
-- **内容**: Velite (Markdown → 类型安全数据层)
-- **字体**: Syne (Display) + JetBrains Mono (Mono)
+## 关键文件
 
-## 项目结构
+| 文件 | 作用 |
+|------|------|
+| `src/app/page.tsx` | 首页：Hero（KineticLetter）+ 交互文本 + 导航 + CopyEmail |
+| `src/app/globals.css` | 设计系统变量 + 全局样式（text-grain、interactive-box、nav-link 等） |
+| `src/components/InteractiveText.tsx` | 可展开交互文本系统（IconMap、InteractiveBox、ProgressIndicator） |
+| `src/components/PageBackground.tsx` | 背景层：dot-grid + ambient-glow + MouseGlow + CustomCursor |
+| `src/components/CustomCursor.tsx` | 自定义十字准星光标 |
+| `src/data/introContent.ts` | 首页交互文本数据（13 个可交互项，最深 4 层） |
+| `docs/UI设计系统规范.md` | 完整设计系统规范（色彩、字体、间距、动效、组件） |
 
-```
-any_concept_web/
-├── content/articles/       # Markdown 文章 (zh/ 和 en/ 子目录)
-├── src/app/                # Next.js App Router 页面
-│   ├── page.tsx            # 首页
-│   ├── craft/              # 设计作品
-│   ├── projects/           # 项目
-│   └── articles/           # 文章
-├── src/components/         # 共享组件
-│   ├── PageHeader.tsx      # 子页面通用顶部导航
-│   ├── PageFooter.tsx      # 通用页脚
-│   ├── NavButton.tsx       # 全局浮动导航菜单
-│   ├── MouseGlow.tsx       # 鼠标跟随光晕
-│   └── LanguageSwitcher/   # 语言切换
-├── src/hooks/              # useLanguage (i18n Context)
-├── src/i18n/locales/       # zh.ts / en.ts 翻译
-├── src/data/               # 项目和作品数据 (按 locale 分文件)
-├── velite.config.ts        # Velite 内容管道配置
-└── docs/                   # 设计文档和计划
-```
+## 设计约束
 
-## 设计系统
+- **色板**: 纯黑 `#000` / 浅灰 `#E8E8E8` / 琥珀橙 `#FF6B00`
+- **字体**: Syne (Display) + JetBrains Mono (Mono)，禁用 Inter/Roboto/Arial
+- **动效缓动**: 统一 `cubic-bezier(0.25, 0.1, 0.25, 1)`
+- **CSS 颜色**: 使用 `var(--accent)` 等变量，不硬编码色值
+- **图标**: 手写 SVG，18×18 / strokeWidth 1.5 / round cap+join
 
-- **背景**: `#000000`
-- **前景**: `#E8E8E8`
-- **强调色**: `#FF6B00` (橙)
-- **弱化色**: `#666666`
-- **风格**: Brutalist 暗色，点阵网格背景，CRT 质感
+## 已知陷阱
 
-## i18n
-
-- 自定义 Context API (`useLanguage` hook)，非 next-intl
-- 翻译键扁平化为 Map，O(1) 查找
-- UI 翻译: `src/i18n/locales/zh.ts` / `en.ts`
-- 文章内容: `content/articles/zh/` / `en/`，同 slug 自动关联语言版本
-- localStorage 持久化，支持浏览器语言检测
-
-## 内容管理 (Velite)
-
-- 文章放在 `content/articles/{locale}/xxx.md`
-- Frontmatter 必需字段: `title`, `slug`, `date`, `locale`
-- 可选字段: `description`, `tags`, `cover`, `draft`
-- 同 slug 不同 locale 的文章会在语言切换时自动关联
-- 构建输出在 `.velite/` (已 gitignore)
+- **React 19**: 组件不能定义在其他组件内部（"Expected static flag" 错误）
+- **React hooks**: 所有 hooks 必须在条件 return 之前调用
+- **CSS filter**: 父级 filter 影响全部子元素，无法在子元素上 `filter: none` 覆盖
+- **text-grain**: 使用 `background-clip: text` + PNG 噪点，必须加在每个字母元素上（不是包裹 span），否则 hover 位移时文字消失
+- **KineticLetter mousemove**: 使用注册表模式共享单个监听器（非每个字母单独绑定）
+- **Vercel**: `vercel.json` 不支持 `rootDirectory`，需在 Dashboard Settings 设置
 
 ## 开发约定
 
-- 运行: `npm run dev` / `npm run build`
-- 所有页面使用 `PageHeader` + `PageFooter` 组件
-- 页面 pattern: `'use client'` + `useLanguage()` + Framer Motion 进场动画
-- CSS 颜色使用 `var(--accent)` 等变量，不要硬编码色值
-- 文章排版样式统一使用 `.article-prose` class
+- `npm run dev` / `npm run build`（在 `any_concept_web/` 目录下）
+- 所有子页面使用 `PageHeader` + `PageFooter` 组件
+- 页面模式: `'use client'` + `useLanguage()` + Framer Motion 进场动画
+- 文章: `content/articles/{locale}/xxx.md`，Velite 构建
