@@ -1,32 +1,45 @@
 # klauden.xyz SEO 优化实施方案
 
-> **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
-
 **目标：** 为 klauden.xyz 建立完整的 SEO 基础设施，使搜索引擎能正确爬取和索引所有页面内容。
 
-**架构思路：** 采用 SC wrapper + CC 内容的标准 Next.js 模式 — 每个 `page.tsx` 改为 Server Component 导出 metadata，交互逻辑下放到独立的 Client Component。同时添加 sitemap、robots、JSON-LD 结构化数据、Open Graph 等 SEO 基础设施。不改变 i18n 路由结构（保持客户端切换），仅在 metadata 层做优化。
+**状态：** 全部完成 (2026-02-24)
 
-**技术栈：** Next.js 15 App Router Metadata API、JSON-LD (schema.org)、Velite
-
-**不改变的部分：**
-
-- 所有页面的视觉效果和交互行为（动画、语言切换、数据加载方式）
-- i18n 路由结构（保持当前 localStorage 模式，不引入 `[locale]` 前缀路由）
-- 数据文件结构（projects.ts、crafts.ts 等）
+**技术栈：** Next.js 15 App Router Metadata API、next-intl、JSON-LD (schema.org)、Velite、Edge Runtime OG Image
 
 ---
 
-## 当前问题总结
+## 实施概览
 
-| 问题 | 严重程度 | 涉及文件 |
-|------|---------|---------|
-| 所有 `page.tsx` 都是 `'use client'`，无法导出 metadata | 致命 | 全部 7 个页面 |
-| 无 sitemap.xml | 高 | 缺失 |
-| 无 robots.txt | 高 | 缺失 |
-| 全局 metadata 极简（仅 title + 有 typo 的 description） | 高 | `layout.tsx` |
-| 无 Open Graph / Twitter Card | 中 | 缺失 |
-| 无 JSON-LD 结构化数据 | 中 | 缺失 |
-| 文章详情页内容被 `isClient` 守卫挡住，爬虫看到空白 | 高 | `articles/[slug]/page.tsx` |
+### 第一阶段：SEO 基础（已完成）
+
+| 任务 | 状态 |
+|------|------|
+| SC/CC 分离 — 所有 7 个页面拆分为 Server Component + Client Component | ✅ |
+| 全局 Layout Metadata 补全（metadataBase、OG、Twitter Card） | ✅ |
+| robots.ts 生成 robots.txt | ✅ |
+| sitemap.ts 动态生成 sitemap.xml（含双语 URL + alternates） | ✅ |
+| JSON-LD 结构化数据（WebSite + Person + Article） | ✅ |
+| 每个页面 generateMetadata / 静态 metadata | ✅ |
+
+### 第二阶段：进阶优化（已完成）
+
+| 任务 | 状态 |
+|------|------|
+| 移除 isClient 守卫 — projects/crafts 数据改为静态导入 + useMemo 同步加载 | ✅ |
+| next-intl 国际化路由 — URL 带 locale 前缀（`/zh/`、`/en/`）| ✅ |
+| hreflang alternates — 每个页面 metadata 包含双语 alternate 链接 | ✅ |
+| 浏览器语言自动检测 — middleware 根据 Accept-Language 重定向 | ✅ |
+| 动态 OG 图片 — 站点级 + 文章级 opengraph-image.tsx（Edge Runtime）| ✅ |
+| 自定义 404 页面 | ✅ |
+
+### 第三阶段：上线验证（已完成）
+
+| 任务 | 状态 |
+|------|------|
+| 生产构建验证（npm run build 无报错） | ✅ |
+| 部署至 Vercel | ✅ |
+| Google Search Console 验证（HTML 文件验证） | ✅ |
+| 提交 sitemap.xml | ✅ 已提交，等待 Google 索引 |
 
 ---
 
@@ -696,10 +709,41 @@ cd any_concept_web && npm run start
 | `src/app/craft/page.tsx` | 改为 SC，导出 metadata，渲染 CraftContent |
 | `src/app/craft/[slug]/page.tsx` | 改为 SC，generateMetadata，渲染 CraftDetailContent |
 
-### 未来可选优化（不在本次范围内）
+## 关键架构变更
 
-- 引入 `next-intl` + `[locale]` 前缀路由，彻底解决双语 SEO
-- 添加 `opengraph-image.tsx` 动态生成 OG 图片
-- 将项目/作品详情页的核心内容也改为服务端渲染
-- 添加 `hreflang` 标签
-- 提交 sitemap 到 Google Search Console
+### next-intl 国际化路由
+
+所有页面移入 `src/app/[locale]/` 目录，middleware 自动处理 locale 前缀。
+
+**核心文件：**
+- `src/i18n/routing.ts` — 路由定义（locales: zh/en，默认 en）
+- `src/i18n/request.ts` — 服务端 locale 配置
+- `src/i18n/navigation.ts` — locale-aware Link、usePathname、useRouter
+- `src/i18n/messages/zh.json` / `en.json` — 翻译文件
+- `src/middleware.ts` — 处理 locale 检测和重定向
+- `src/app/[locale]/layout.tsx` — NextIntlClientProvider 包装
+
+**组件迁移规则：**
+- `useLanguage()` → `useTranslations()` + `useLocale()` from `next-intl`
+- `Link from 'next/link'` → `Link from '@/i18n/navigation'`（自动添加 locale 前缀）
+- `usePathname from 'next/navigation'` → `usePathname from '@/i18n/navigation'`
+- LanguageSwitcher 从状态切换改为 `<Link href={pathname} locale="zh/en">`
+
+### SSR 数据加载
+
+projects/crafts 数据从动态 import + useEffect + isClient 改为静态 import + useMemo 同步加载。
+
+**文件：** `src/data/localizedData.ts` — 导出 `getAllProjectsSync`、`getProjectBySlugSync`、`getAllCraftsSync`、`getCraftDetailSync` 等同步函数。
+
+### 动态 OG 图片
+
+- `src/app/[locale]/opengraph-image.tsx` — 站点级（KLAUDEN 品牌图）
+- `src/app/[locale]/articles/[slug]/opengraph-image.tsx` — 文章级（动态标题 + 标签）
+- 字体文件：`public/fonts/Syne-Bold.ttf`
+
+### 已删除文件
+
+- `src/hooks/useLanguage.tsx` — 旧 i18n 系统
+- `src/hooks/useSafeLocaleStorage.ts` — localStorage 封装
+- `src/i18n/locales/zh.ts`、`en.ts`、`index.ts` — 旧翻译文件
+- `src/app/providers.tsx` — 旧 Context Provider
