@@ -1,18 +1,19 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { notFound, useParams } from 'next/navigation';
 import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { articles } from '#site/content';
 
-export default function ArticleDetailPage() {
+export default function ArticleDetailContent() {
   const params = useParams();
-  const { locale, isClient } = useLanguage();
+  const locale = useLocale();
   const slug = params?.slug as string;
 
   const allPublished = articles
@@ -28,15 +29,6 @@ export default function ArticleDetailPage() {
   const localeFiltered = allPublished.filter((a) => a.locale === (article?.locale ?? locale));
   const navList = localeFiltered.length > 0 ? localeFiltered : allPublished;
 
-  if (!isClient) {
-    return (
-      <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
-        <PageBackground />
-        <div className="min-h-[80vh]" />
-      </main>
-    );
-  }
-
   if (!article) notFound();
 
   return <ArticleContent article={article} allArticles={navList} />;
@@ -49,7 +41,7 @@ function ArticleContent({
   article: (typeof articles)[number];
   allArticles: (typeof articles)[number][];
 }) {
-  const { t } = useLanguage();
+  const t = useTranslations();
 
   const currentIndex = allArticles.findIndex((a) => a.slug === article.slug);
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;

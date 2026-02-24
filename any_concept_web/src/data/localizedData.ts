@@ -1,35 +1,54 @@
-import { Locale } from '@/i18n/locales';
+import { Project } from './projects';
+import { CraftDetail } from './crafts';
 
-// 通用接口，避免中英文版本的类型冲突
-interface LocalizedCrafts {
-  getAllCrafts: () => Promise<any[]>;
-  getCraftDetail: (slug: string) => Promise<any | undefined>;
-  getAllCraftSlugs: () => Promise<string[]>;
+// 接受 string 以兼容 next-intl 的 useLocale() 返回值
+type Locale = string;
+
+// 静态导入所有数据模块（支持 SSR）
+import { projectData as projectsZh } from './projects';
+import { projectData as projectsEn } from './projects_en';
+import { craftData as craftsZh } from './crafts';
+import { craftData as _craftsEn } from './crafts_en';
+
+// 中英文 CraftDetail 的 type 字段字面量不同，统一到 zh 接口
+const craftsEn = _craftsEn as unknown as CraftDetail[];
+
+// 同步获取数据（替代原有的动态 import 异步版本）
+function getProjects(locale: Locale): Project[] {
+  return locale === 'zh' ? projectsZh : (projectsEn as unknown as Project[]);
 }
 
-interface LocalizedProjects {
-  getAllProjects: () => Promise<any[]>;
-  getProjectBySlug: (slug: string) => Promise<any | undefined>;
-  getProjectById: (id: string) => Promise<any | undefined>;
-  getAllProjectSlugs: () => Promise<string[]>;
+function getCrafts(locale: Locale): CraftDetail[] {
+  return locale === 'zh' ? craftsZh : craftsEn;
 }
 
-type LocalizedDataKey = 'crafts' | 'projects';
+// Projects 同步 API
+export function getAllProjectsSync(locale: Locale): Project[] {
+  return getProjects(locale);
+}
 
-// 函数重载：根据 key 推断返回类型
-export async function getLocalizedData(locale: Locale, key: 'crafts'): Promise<LocalizedCrafts>;
-export async function getLocalizedData(locale: Locale, key: 'projects'): Promise<LocalizedProjects>;
-export async function getLocalizedData(locale: Locale, key: LocalizedDataKey) {
-  switch (key) {
-    case 'crafts':
-      return locale === 'zh'
-        ? await import('./crafts') as unknown as LocalizedCrafts
-        : await import('./crafts_en') as unknown as LocalizedCrafts;
-    case 'projects':
-      return locale === 'zh'
-        ? await import('./projects') as unknown as LocalizedProjects
-        : await import('./projects_en') as unknown as LocalizedProjects;
-    default:
-      throw new Error(`Unknown data key: ${key}`);
-  }
-};
+export function getProjectBySlugSync(locale: Locale, slug: string): Project | undefined {
+  return getProjects(locale).find((p) => p.slug === slug);
+}
+
+export function getAllProjectSlugsSync(locale: Locale): string[] {
+  return getProjects(locale)
+    .filter((p) => p.slug)
+    .map((p) => p.slug!);
+}
+
+// Crafts 同步 API
+export function getAllCraftsSync(locale: Locale): CraftDetail[] {
+  return getCrafts(locale);
+}
+
+export function getCraftDetailSync(locale: Locale, slug: string): CraftDetail | undefined {
+  return getCrafts(locale).find((c) => c.slug === slug);
+}
+
+export function getAllCraftSlugsSync(locale: Locale): string[] {
+  return getCrafts(locale)
+    .filter((c) => c.slug && !c.externalLink)
+    .map((c) => c.slug);
+}
+

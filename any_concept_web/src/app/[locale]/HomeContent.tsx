@@ -5,7 +5,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import InteractiveText from "@/components/InteractiveText";
 import PageBackground from "@/components/PageBackground";
 import { introContent } from "@/data/introContent";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 /**
  * 实时时钟 — 上海时区
@@ -320,9 +320,9 @@ const SectionLabel = ({
 );
 
 /**
- * 首页
+ * 首页内容（Client Component）
  */
-export default function Home() {
+export default function HomeContent() {
   const letters = "KLAUDEN".split("");
 
   return (

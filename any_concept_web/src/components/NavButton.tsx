@@ -3,14 +3,13 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, cubicBezier } from 'framer-motion';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useLanguage } from '@/hooks/useLanguage';
+import { Link, usePathname } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import LanguageSwitcher from './LanguageSwitcher';
 
 const NavButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { t } = useLanguage();
+  const t = useTranslations();
   
   // 定义贝塞尔曲线过渡效果
   const customEasing = cubicBezier(0.25, 0.1, 0.25, 1);

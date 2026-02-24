@@ -1,7 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { JetBrains_Mono, Syne } from "next/font/google";
-import { Providers } from "./providers";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -18,8 +17,28 @@ const syne = Syne({
 });
 
 export const metadata: Metadata = {
-  title: "Klauden",
-  description: "Klauden's personal  website.",
+  metadataBase: new URL('https://klauden.xyz'),
+  title: {
+    default: 'Klauden — Full-Stack Designer',
+    template: '%s | Klauden',
+  },
+  description: 'Klauden 的个人网站。全栈设计师，专注于 UI/UX 设计与前端开发，基于上海。',
+  keywords: ['Klauden', 'Full-Stack Designer', 'UI/UX', '前端开发', '上海', 'Portfolio'],
+  authors: [{ name: 'Klauden' }],
+  creator: 'Klauden',
+  openGraph: {
+    type: 'website',
+    locale: 'zh_CN',
+    alternateLocale: 'en_US',
+    siteName: 'Klauden',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -35,14 +54,9 @@ export default function RootLayout({
     >
       <head>
         <meta name="theme-color" content="#000000" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{var l=localStorage.getItem('locale');if(l==='en'||l==='zh'){document.documentElement.dataset.locale=l;if(l==='en')document.documentElement.lang='en'}}catch(e){}`,
-          }}
-        />
       </head>
       <body className="font-mono">
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );

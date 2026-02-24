@@ -1,16 +1,18 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { articles } from '#site/content';
 
-export default function ArticlesPage() {
-  const { locale, isClient, t } = useLanguage();
+export default function ArticlesContent() {
+  const t = useTranslations();
+  const locale = useLocale();
 
   const allPublished = articles
     .filter((a) => !a.draft)
@@ -28,7 +30,7 @@ export default function ArticlesPage() {
       <PageHeader
         backHref="/"
         backText="KLAUDEN"
-        rightContent={isClient && <>{filtered.length} {t('articles.count')}</>}
+        rightContent={<>{filtered.length} {t('articles.count')}</>}
       />
 
       {/* 页面标题区 */}
@@ -66,9 +68,6 @@ export default function ArticlesPage() {
 
       {/* 文章列表 */}
       <section className="px-6 md:px-20 lg:px-28 mt-16 md:mt-24">
-        {!isClient ? (
-          <div className="min-h-[50vh]" />
-        ) : (
         <div className="flex flex-col">
           {filtered.map((article, index) => (
             <motion.div
@@ -149,7 +148,6 @@ export default function ArticlesPage() {
             </motion.div>
           )}
         </div>
-        )}
       </section>
 
       {/* 页脚 */}

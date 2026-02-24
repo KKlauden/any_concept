@@ -1,31 +1,20 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import PageBackground from '@/components/PageBackground';
 import WorkItem from '@/components/WorkItem';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
-import { useLanguage } from '@/hooks/useLanguage';
-import { getLocalizedData } from '@/data/localizedData';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { getAllCraftsSync } from '@/data/localizedData';
 
-export default function CraftPage() {
-  const { locale, isClient, t } = useLanguage();
-  const [works, setWorks] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState(true);
+export default function CraftContent() {
+  const t = useTranslations();
+  const locale = useLocale();
 
-  React.useEffect(() => {
-    if (isClient) {
-      const fetchData = async () => {
-        const craftsModule = await getLocalizedData(locale, 'crafts');
-        const worksData = await craftsModule.getAllCrafts();
-        setWorks(worksData);
-        setLoading(false);
-      };
-      fetchData();
-    }
-  }, [locale, isClient]);
+  const works = useMemo(() => getAllCraftsSync(locale), [locale]);
 
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
@@ -35,7 +24,7 @@ export default function CraftPage() {
       <PageHeader
         backHref="/"
         backText="KLAUDEN"
-        rightContent={!loading && <>{works.length} WORKS</>}
+        rightContent={<>{works.length} WORKS</>}
       />
 
       {/* 页面标题区 */}
@@ -74,27 +63,23 @@ export default function CraftPage() {
 
       {/* 作品网格 */}
       <section className="px-6 md:px-20 lg:px-28 mt-16 md:mt-24">
-        {loading ? (
-          <div className="min-h-[50vh]" />
-        ) : (
-          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-            {works.map((work, i) => (
-              <div key={work.id} className="mb-4 break-inside-avoid">
-                <WorkItem
-                  title={work.title}
-                  year={work.year}
-                  coverImage={work.coverImage}
-                  aspectRatio={work.aspectRatio}
-                  type={work.type}
-                  hasExternal={work.hasExternal}
-                  link={work.externalLink}
-                  slug={!work.externalLink ? work.slug : undefined}
-                  index={i}
-                />
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
+          {works.map((work, i) => (
+            <div key={work.id} className="mb-4 break-inside-avoid">
+              <WorkItem
+                title={work.title}
+                year={work.year}
+                coverImage={work.coverImage}
+                aspectRatio={work.aspectRatio}
+                type={work.type}
+                hasExternal={work.hasExternal}
+                link={work.externalLink}
+                slug={!work.externalLink ? work.slug : undefined}
+                index={i}
+              />
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* 页脚 */}

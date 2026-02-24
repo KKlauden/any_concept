@@ -1,30 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import PageBackground from '@/components/PageBackground';
 import PageHeader from '@/components/PageHeader';
 import PageFooter from '@/components/PageFooter';
 import ProjectItem from './ProjectItem';
-import { useLanguage } from '@/hooks/useLanguage';
-import { getLocalizedData } from '@/data/localizedData';
+import { useTranslations } from 'next-intl';
+import { useLocale } from 'next-intl';
+import { getAllProjectsSync } from '@/data/localizedData';
 
-export default function ProjectsPage() {
-  const { locale, isClient, t } = useLanguage();
-  const [projects, setProjects] = React.useState<any[]>([]);
-  const [loading, setLoading] = React.useState(true);
+export default function ProjectsContent() {
+  const t = useTranslations();
+  const locale = useLocale();
 
-  React.useEffect(() => {
-    if (isClient) {
-      const fetchData = async () => {
-        const projectsModule = await getLocalizedData(locale, 'projects');
-        const projectsData = await projectsModule.getAllProjects();
-        setProjects(projectsData);
-        setLoading(false);
-      };
-      fetchData();
-    }
-  }, [locale, isClient]);
+  const projects = useMemo(() => getAllProjectsSync(locale), [locale]);
 
   return (
     <main className="relative z-10 min-h-screen bg-background text-foreground overflow-x-clip">
@@ -33,7 +23,7 @@ export default function ProjectsPage() {
       <PageHeader
         backHref="/"
         backText="KLAUDEN"
-        rightContent={!loading && <>{projects.length} PROJECTS</>}
+        rightContent={<>{projects.length} PROJECTS</>}
       />
 
       {/* 页面标题区 */}
@@ -71,25 +61,21 @@ export default function ProjectsPage() {
 
       {/* 项目列表 */}
       <section className="px-6 md:px-20 lg:px-28 mt-16 md:mt-24">
-        {loading ? (
-          <div className="min-h-[50vh]" />
-        ) : (
-          <div className="flex flex-col gap-1">
-            {projects.map((project, index) => (
-              <ProjectItem
-                key={project.id}
-                id={project.id}
-                title={project.title}
-                description={project.description}
-                year={project.year}
-                link={project.link}
-                repo={project.repo}
-                isWIP={project.isWIP}
-                index={index}
-              />
-            ))}
-          </div>
-        )}
+        <div className="flex flex-col gap-1">
+          {projects.map((project, index) => (
+            <ProjectItem
+              key={project.id}
+              id={project.id}
+              title={project.title}
+              description={project.description}
+              year={project.year}
+              link={project.link}
+              repo={project.repo}
+              isWIP={project.isWIP}
+              index={index}
+            />
+          ))}
+        </div>
       </section>
 
       <PageFooter />

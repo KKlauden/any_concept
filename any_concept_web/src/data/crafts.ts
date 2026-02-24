@@ -28,7 +28,7 @@ export interface CraftDetail {
 }
 
 // 作品数据
-const craftData: CraftDetail[] = [
+export const craftData: CraftDetail[] = [
     {
         id: "bilibili-live",
         slug: "bilibili-live",

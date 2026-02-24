@@ -32,7 +32,7 @@ export interface ProjectImage {
 }
 
 // Project data
-const projectData: Project[] = [
+export const projectData: Project[] = [
   {
     id: "doc-chat",
     slug: "doc-chat",

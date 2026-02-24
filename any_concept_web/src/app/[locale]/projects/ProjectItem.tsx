@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import Link from "next/link";
-import { useLanguage } from "@/hooks/useLanguage";
+import { Link } from "@/i18n/navigation";
+import { useTranslations, useLocale } from "next-intl";
 
 interface ProjectItemProps {
   title: string;
@@ -37,7 +37,8 @@ const ProjectItem: React.FC<ProjectItemProps> = ({
   index,
   id,
 }) => {
-  const { locale, t } = useLanguage();
+  const t = useTranslations();
+  const locale = useLocale();
   const [opacity, setOpacity] = useState(0);
   const [displayTitle, setDisplayTitle] = useState("");
   const [displayDesc, setDisplayDesc] = useState("");

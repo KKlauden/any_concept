@@ -28,7 +28,7 @@ export interface CraftDetail {
 }
 
 // Craft data
-const craftData: CraftDetail[] = [
+export const craftData: CraftDetail[] = [
     {
         id: "bilibili-live",
         slug: "bilibili-live",
